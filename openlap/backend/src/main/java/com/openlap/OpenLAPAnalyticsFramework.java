@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
 /**
- * Main Spring Application of the OpenLAP-AnalyticsFramework
+ * Main Spring tests Application of the OpenLAP-AnalyticsFramework
  */
 @SpringBootApplication
 public class OpenLAPAnalyticsFramework {
