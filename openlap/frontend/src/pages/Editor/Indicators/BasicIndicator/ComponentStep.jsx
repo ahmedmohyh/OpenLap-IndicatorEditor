@@ -27,11 +27,10 @@ import CheckIcon from '@mui/icons-material/Check';
  * @todo Extract this component into a separate file for better organization.
  * @author Louis Born <louis.born@stud.uni-due.de> 
  */
-export default function ComponentStep(props) {
+export default function ComponentStep({setLoadingFlag}) {
     const dispatch = useDispatch();
     const [completed, setCompleted] = useState([]);
     const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
-
     const activeStep = useSelector((state) => state.indicatorEditorReducer.common.activeStep);
     const completedStep = useSelector((state) => state.indicatorEditorReducer.common.completedStep);
     const selectedAnalysisMethod = useSelector(state => state.indicatorEditorReducer.selectedData.analysisMethod);
@@ -89,6 +88,9 @@ export default function ComponentStep(props) {
         }
         dispatch(generateIndicatorPreview(getIndicatorPreviewCode));
         dispatch(saveIndicatorPreview(getIndicatorPreviewCode));
+
+        //
+        setLoadingFlag();
     }
 
     // Methods to handle general step component functionality
