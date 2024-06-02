@@ -49,6 +49,9 @@ export default function ComponentPreview({
   const dispatch = useDispatch();
   const showSnackbar = useSnackbar();
 
+
+  const completePreviewStep = useSelector((state) => state.indicatorEditorReducer.common.completePreviewStep);
+
   const displayCodeData = useSelector(
     (state) =>
       state.indicatorEditorReducer.fetchedData.visualizationCode?.displayCode
@@ -221,7 +224,7 @@ export default function ComponentPreview({
 
 
             <>
-             {!displayCodeData && !loadingLastStep ? (
+             {!displayCodeData && !completePreviewStep ? (
             <div  style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#5F6368', fontSize: '14px', minHeight: '156px' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '16px', color: '#5F6368', fontSize: '14px', minHeight: '156px' }}>
                     <img width="96px" height="96px" src={imgNoPreview} />
@@ -232,7 +235,7 @@ export default function ComponentPreview({
                 
                 <ConditionalSelectionRender
                   isRendered={true}
-                  isLoading={!displayCodeData && loadingLastStep}
+                  isLoading={!displayCodeData && completePreviewStep}
                   hasError={errorMessage}
                   handleRefresh={() => { } }
                 ></ConditionalSelectionRender>
