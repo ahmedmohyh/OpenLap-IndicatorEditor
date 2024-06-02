@@ -2,6 +2,7 @@
 export const RESET_INDICATOR_SESSION = "resetIndicatorEditorSession";
 export const SET_ACTIVE_INDICATOR_STEP = "setActiveStep";
 export const SET_COMPLETED_INDICATOR_STEP = "setCompletedStep";
+export const SET_COMPLETE_PREVIEW_STEP = "setCompletePreviewStep";
 
 // Datasets
 export const GET_ALL_PLATFORMS = "getAllPlatforms";
@@ -82,6 +83,15 @@ export const setCompletedIndicatorStep = (steps) => ({
     steps
   }
 })
+
+export const setCompletePreviewStep = (/*steps*/) => ({
+  type: SET_COMPLETE_PREVIEW_STEP,
+  // payload: {
+  //   steps
+  // }
+})
+
+
 // Platform
 export const getAllPlatforms = () => ({
   type: GET_ALL_PLATFORMS,
@@ -292,7 +302,10 @@ export const setIndicatorDataForEdit = (indicatorData) => ({
 
 const initialState = {
   common: {
-    activeStep: 0, completedStep: {}, indicatorSaved: false
+    activeStep: 0, 
+    completedStep: {},
+    indicatorSaved: false,
+    completePreviewStep: false,
   },
   selectedData: {
     platforms: [],
@@ -1015,7 +1028,14 @@ export default function editorReducer(state = initialState, action) {
           completedStep: action.payload.steps
         }
       };
-
+    case SET_COMPLETE_PREVIEW_STEP:
+      return {
+        ...state,
+        common: {
+          ...state.common,
+          completePreviewStep: true
+        }
+      };
     // Default
     default:
       return state;

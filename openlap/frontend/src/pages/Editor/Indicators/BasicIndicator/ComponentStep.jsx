@@ -13,6 +13,7 @@ import {
     saveIndicatorPreview,
     setActiveIndicatorStep,
     setCompletedIndicatorStep,
+    setCompletePreviewStep,
     setGeneratedVisualizationCode
 } from "../../../../utils/redux/reducers/indicatorEditor";
 import StepDataset from "./StepDataset/StepDataset";
@@ -27,7 +28,7 @@ import CheckIcon from '@mui/icons-material/Check';
  * @todo Extract this component into a separate file for better organization.
  * @author Louis Born <louis.born@stud.uni-due.de> 
  */
-export default function ComponentStep({setLoadingFlag}) {
+export default function ComponentStep(props) {
     const dispatch = useDispatch();
     const [completed, setCompleted] = useState([]);
     const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
@@ -88,9 +89,9 @@ export default function ComponentStep({setLoadingFlag}) {
         }
         dispatch(generateIndicatorPreview(getIndicatorPreviewCode));
         dispatch(saveIndicatorPreview(getIndicatorPreviewCode));
+        dispatch(setCompletePreviewStep()); 
 
-        //
-        setLoadingFlag();
+        // setLoadingFlag();
     }
 
     // Methods to handle general step component functionality
