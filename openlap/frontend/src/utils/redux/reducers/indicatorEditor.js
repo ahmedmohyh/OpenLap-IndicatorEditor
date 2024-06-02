@@ -955,7 +955,8 @@ export default function editorReducer(state = initialState, action) {
       return {
         common: {
           ...state.common,
-          activeStep: 0, completedStep: {}, indicatorSaved: false
+          activeStep: 0, completedStep: {}, indicatorSaved: false,
+          completePreviewStep: false,
         },
         selectedData: {
           ...state.selectedData,
