@@ -4,9 +4,13 @@ import News from "./News";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar";
 import openlapLogo from "../../../assets/img/home-openlap-laptop.jpg";
-
+import React, {useState} from "react";
 const Home = () => {
   const navigate = useNavigate();
+
+
+   const [name, setName] = useState("Counter App");
+
 
   const handleTestUser = () => {
     localStorage.setItem("userToken", import.meta.env.VITE_APP_TEST_KEY);
@@ -14,6 +18,11 @@ const Home = () => {
       window.location.href = "/isc";
     }, 1000);
   };
+
+
+  const logSomething = () => {
+    console.log("Lenoie: " + name)
+  }
 
   return (
     <>
@@ -48,6 +57,11 @@ const Home = () => {
               <Button variant="contained" onClick={() => navigate("/sign-up")}>
                 Sign up now
               </Button>
+
+              <Button variant="" onClick={() => logSomething()} sx={{ml:2}}>
+                New button 
+              </Button>
+
             </Grid>
           </Grid>
         </Grid>
