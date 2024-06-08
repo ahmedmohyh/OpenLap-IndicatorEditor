@@ -39,6 +39,13 @@ import { getUserQuestionsAndIndicators } from "../../../utils/redux/reducers/red
 import { scrollToTop } from "../../../utils/utils";
 import config from "./config";
 import CloseIcon from '@mui/icons-material/Close';
+import ConditionalSelectionRender from '../Common/ConditionalSelectionRender/ConditionalSelectionRender';
+import SelectContainer from '../Common/SelectContainer/SelectContainer';
+import MenuMultiSelect from "../Common/MenuMultiSelect/MenuMultiSelect";
+
+
+const indicatorTypes = ['Basic Indicator', 'Composite Indicator'];
+
 
 const Section = styled('div')(() => ({
     display: 'flex',
@@ -58,6 +65,9 @@ const Section = styled('div')(() => ({
 
 /**@author Louis Born <louis.born@stud.uni-due.de> */
 export default function Dashboard() {
+
+    console.log(indicatorTypes);
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -160,6 +170,8 @@ export default function Dashboard() {
     useEffect(() => {
         if (userDefinedIndicators.length > 0) {
             setIndicators(userDefinedIndicators[0].indicators);
+
+            console.log(userDefinedIndicators[0].indicators.createdOn);
         }
     }, [userDefinedIndicators]);
 
@@ -200,7 +212,16 @@ export default function Dashboard() {
                                             <p style={{ marginTop: 0, fontSize: '16px' }}>Your workspace</p>
                                             <Grid container sx={{ backgroundColor: '#F6F6F6' }}>
                                                 <Grid item xs={12}>
-                                                    <TextField
+                                                   
+                                                </Grid>
+                                            </Grid>
+                                            <TableContainer component={Paper}>
+                                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <TableCell>Indicator Name
+
+                                                            <TextField
                                                         type="search"
                                                         fullWidth
                                                         sx={{ backgroundColor: '#f1f3f4' }}
@@ -214,14 +235,32 @@ export default function Dashboard() {
                                                             )
                                                         }}
                                                     />
-                                                </Grid>
-                                            </Grid>
-                                            <TableContainer component={Paper}>
-                                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                                    <TableHead>
-                                                        <TableRow>
-                                                            <TableCell>Indicator Name</TableCell>
-                                                            <TableCell>Type</TableCell>
+                                                            </TableCell>
+                                                          
+                                                            <TableCell>Type
+
+                                                            <ConditionalSelectionRender
+                                                                isRendered={true}
+                                                                isLoading={(false)}
+                                                                hasError={""}
+                                                                >
+                                                                <SelectContainer
+                                                                    name={"filter type"}
+                                                                    isMandatory={false}
+                                                                    allowsMultipleSelections={false}
+                                                                >
+                                                                    <MenuMultiSelect
+                                                                    name={" test "}
+                                                                    dataSource={indicatorTypes}
+                                                                    itemName={indicatorTypes}
+                                                                    />
+                                                                </SelectContainer>
+                                                                </ConditionalSelectionRender>
+
+
+                                                            </TableCell>
+                                                            
+                                                            <TableCell style={{ display: 'none' }}>Created Date</TableCell>
                                                             <TableCell align="center">Preview</TableCell>
                                                         </TableRow>
                                                     </TableHead>
@@ -235,6 +274,8 @@ export default function Dashboard() {
                                                                     {indicator.name}
                                                                 </TableCell>
                                                                 <TableCell>{(indicator.indicatorType === 'composite') ? 'Composite Indicator' : (indicator.indicatorType === 'multianalysis') ? 'Multi-Level Analysis Indicator' : indicator.indicatorType}</TableCell>
+                                                                <TableCell style={{ display: 'none' }}>{indicator.createdBy}</TableCell>
+
                                                                 <TableCell>
                                                                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                                                                         <Tooltip title="Open Preview">
