@@ -1,10 +1,12 @@
 package com.openlap.AnalyticsEngine.dto.Response;
 
+import cn.hutool.core.date.DateTime;
 import com.openlap.AnalyticsEngine.dto.QueryParameters;
 import com.openlap.AnalyticsModules.model.*;
 import com.openlap.dataset.OpenLAPDataSet;
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 @Data
@@ -25,9 +27,18 @@ public class IndicatorResponse {
 	private String parameters;
 	private String indicatorType;
 	private String createdBy;
+	private Timestamp createdOn;
 	private String indicatorRequestCode;
 
 	public IndicatorResponse() {
+	}
+
+	public Timestamp getCreatedOn() {
+		return createdOn;
+	}
+
+	public void setCreatedOn(Timestamp createdOn) {
+		this.createdOn = createdOn;
 	}
 
 	public String getId() {
