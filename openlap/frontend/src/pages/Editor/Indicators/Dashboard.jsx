@@ -41,42 +41,38 @@ import ModalMessage from "../Common/Modal/ModalMessage";
 import { getUserQuestionsAndIndicators } from "../../../utils/redux/reducers/reducer";
 import { scrollToTop } from "../../../utils/utils";
 import config from "./config";
-import CloseIcon from "@mui/icons-material/Close";
-import SelectContainer from "../Common/SelectContainer/SelectContainer";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import MenuSingleSelect from "../Common/MenuSingleSelect/MenuSingleSelect";
+import CloseIcon from '@mui/icons-material/Close';
+import ConditionalSelectionRender from '../Common/ConditionalSelectionRender/ConditionalSelectionRender';
+import SelectContainer from '../Common/SelectContainer/SelectContainer';
+import MenuMultiSelect from "../Common/MenuMultiSelect/MenuMultiSelect";
 
-const indicatorTypes = [
-  "Basic Indicator",
-  "Composite Indicator",
-  "Multi-level Indicator",
-];
 
-const Section = styled("div")(() => ({
-  display: "flex",
-  flexDirection: "column",
-  borderBottom: "1px solid #C9C9C9",
-  marginLeft: "-24px",
-  marginRight: "-24px",
-  padding: "10px 24px 10px 24px",
-  minHeight: "100%",
-  "&.first": {
-    padding: "0 16px 10px 16px",
-  },
-  "&.last": {
-    borderBottom: "none",
-  },
+const indicatorTypes = ['Basic Indicator', 'Composite Indicator'];
+
+
+const Section = styled('div')(() => ({
+    display: 'flex',
+    flexDirection: 'column',
+    borderBottom: '1px solid #C9C9C9',
+    marginLeft: '-24px',
+    marginRight: '-24px',
+    padding: '10px 24px 10px 24px',
+    minHeight: '100%',
+    '&.first': {
+        padding: '0 16px 10px 16px'
+    },
+    '&.last': {
+        borderBottom: 'none'
+    }
 }));
 
 /**@author Louis Born <louis.born@stud.uni-due.de> */
 export default function Dashboard() {
-  // console.log(indicatorTypes);
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+    console.log(indicatorTypes);
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
   const indicatorSaveResponse = useSelector(
     (state) => state.compositeEditorReducer.selectedData.indicatorResponseData
@@ -259,13 +255,13 @@ export default function Dashboard() {
     );
   };
 
-  useEffect(() => {
-    if (userDefinedIndicators.length > 0) {
-      setIndicators(userDefinedIndicators[0].indicators);
+    useEffect(() => {
+        if (userDefinedIndicators.length > 0) {
+            setIndicators(userDefinedIndicators[0].indicators);
 
-      //console.log(userDefinedIndicators[0].indicators.createdBy);
-    }
-  }, [userDefinedIndicators]);
+            console.log(userDefinedIndicators[0].indicators.createdOn);
+        }
+    }, [userDefinedIndicators]);
 
   useEffect(() => {
     dispatch(resetIndicatorSession());
@@ -273,316 +269,188 @@ export default function Dashboard() {
     scrollToTop();
   }, [dispatch, indicatorSaveResponse.length]);
 
-  return (
-    <>
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <div>
-          <div>
-            <AppBar position="static" elevation={0}>
-              <Toolbar
-                sx={{
-                  minHeight: "48px!important",
-                  backgroundColor: "#ffffff",
-                  borderBottom: "1px solid #C9C9C9",
-                }}
-              >
-                <Container disableGutters maxWidth="false">
-                  <Box
-                    sx={{
-                      maxHeight: "64px",
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      alignItems: "center",
-                    }}
-                  >
-                    {/* Centered Page Title*/}
-                    <div
-                      style={{
-                        flexGrow: 1,
-                        textAlign: "center",
-                        fontSize: "1rem",
-                        color: "#000000",
-                      }}
-                    >
-                      <div role="presentation">
-                        <Breadcrumbs aria-label="breadcrumb">
-                          <Typography color="text.primary">
-                            Indicator Editor
-                          </Typography>
-                        </Breadcrumbs>
-                      </div>
-                    </div>
-                  </Box>
-                </Container>
-              </Toolbar>
-            </AppBar>
-            <Grid
-              container
-              style={{
-                maxWidth: "990px",
-                display: "flex",
-                flexDirection: "column",
-                margin: "24px auto",
-                padding: "0 32px",
-              }}
-            >
-              <Grid item>
+    return (
+        <>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "32px",
-                    }}
-                  >
-                    <_createNewIndicator />
                     <div>
-                      <p style={{ marginTop: 0, fontSize: "16px" }}>
-                        Your workspace
-                      </p>
-                      <Grid container sx={{ backgroundColor: "#F6F6F6" }}>
-                        <Grid item xs={12}></Grid>
-                      </Grid>
-                      <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>
-                                <Box display="flex" flexDirection="column">
-                                  <div>
-                                    {" "}
-                                    <strong>Indicator Name</strong>{" "}
-                                  </div>
-                                  <TextField
-                                    type="search"
-                                    fullWidth
-                                    sx={{ backgroundColor: "#f1f3f4" }}
-                                    placeholder="Search"
-                                    onChange={searchByIndicatorName}
-                                    InputProps={{
-                                      endAdornment: (
-                                        <InputAdornment position="end">
-                                          <SearchIcon></SearchIcon>
-                                        </InputAdornment>
-                                      ),
-                                    }}
-                                  />
-                                </Box>
-                              </TableCell>
+                        <AppBar position="static" elevation={0}>
+                            <Toolbar sx={{ minHeight: '48px!important', backgroundColor: '#ffffff', borderBottom: '1px solid #C9C9C9' }}>
+                                <Container disableGutters maxWidth="false">
+                                    <Box sx={{ maxHeight: '64px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                        {/* Centered Page Title*/}
+                                        <div style={{ flexGrow: 1, textAlign: 'center', fontSize: '1rem', color: '#000000' }}>
+                                            <div role="presentation">
+                                                <Breadcrumbs aria-label="breadcrumb">
+                                                    <Typography color="text.primary">Indicator Editor</Typography>
+                                                </Breadcrumbs>
+                                            </div>
+                                        </div>
+                                    </Box>
+                                </Container>
+                            </Toolbar>
+                        </AppBar>
+                        <Grid container style={{ maxWidth: '990px', display: 'flex', flexDirection: 'column', margin: '24px auto', padding: '0 32px' }}>
+                            <Grid item>
+                                <div>
 
-                              <TableCell style={{ width: "300px" }}>
-                                <Box display="flex" flexDirection="column">
-                                  <div>
-                                    <strong>Type </strong>{" "}
-                                  </div>
-                                  <SelectContainer
-                                    name={"Type filter"}
-                                    isMandatory={false}
-                                    allowsMultipleSelections={false}
-                                    hideDesc={true}
-                                  >
-                                    <MenuSingleSelect
-                                      name={"Type"}
-                                      dataSource={indicatorTypes}
-                                      itemName={selectedType}
-                                      handleChange={handleSelectTypeFilter}
-                                    />
-                                  </SelectContainer>
-                                </Box>
-                              </TableCell>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+                                        <_createNewIndicator />
+                                        <div>
+                                            <p style={{ marginTop: 0, fontSize: '16px' }}>Your workspace</p>
+                                            <Grid container sx={{ backgroundColor: '#F6F6F6' }}>
+                                                <Grid item xs={12}>
+                                                   
+                                                </Grid>
+                                            </Grid>
+                                            <TableContainer component={Paper}>
+                                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <TableCell>Indicator Name
 
-                              <TableCell>
-                                <Box display="flex" flexDirection="column">
-                                  <div>
-                                    <strong>Creation date</strong>
-                                  </div>
-                                  <LocalizationProvider
-                                    style={{ marginTop: "-9px" }}
-                                    dateAdapter={AdapterDayjs}
-                                  >
-                                    <DemoContainer components={["DatePicker"]}>
-                                      <DatePicker
-                                        label="Pickup a date"
-                                        value={selectedDate}
-                                        onChange={handleDateChange}
-                                      />
-                                    </DemoContainer>
-                                  </LocalizationProvider>
-                                </Box>
-                              </TableCell>
+                                                            <TextField
+                                                        type="search"
+                                                        fullWidth
+                                                        sx={{ backgroundColor: '#f1f3f4' }}
+                                                        placeholder="Search"
+                                                        onChange={searchByIndicatorName}
+                                                        InputProps={{
+                                                            endAdornment: (
+                                                                <InputAdornment position="end">
+                                                                    <SearchIcon></SearchIcon>
+                                                                </InputAdornment>
+                                                            )
+                                                        }}
+                                                    />
+                                                            </TableCell>
+                                                          
+                                                            <TableCell>Type
 
-                              <TableCell align="center">Preview</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {filteredResults.map((indicator) => (
-                              <TableRow
-                                key={indicator.id}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    border: 0,
-                                  },
-                                }}
-                              >
-                                <TableCell component="th" scope="row">
-                                  {indicator.name}
-                                </TableCell>
+                                                            <ConditionalSelectionRender
+                                                                isRendered={true}
+                                                                isLoading={(false)}
+                                                                hasError={""}
+                                                                >
+                                                                <SelectContainer
+                                                                    name={"filter type"}
+                                                                    isMandatory={false}
+                                                                    allowsMultipleSelections={false}
+                                                                >
+                                                                    <MenuMultiSelect
+                                                                    name={" test "}
+                                                                    dataSource={indicatorTypes}
+                                                                    itemName={indicatorTypes}
+                                                                    />
+                                                                </SelectContainer>
+                                                                </ConditionalSelectionRender>
 
-                                <TableCell>
-                                  {indicator.indicatorType === "composite"
-                                    ? "Composite Indicator"
-                                    : indicator.indicatorType ===
-                                      "multianalysis"
-                                    ? "Multi-Level Analysis Indicator"
-                                    : indicator.indicatorType}
-                                </TableCell>
 
-                                <TableCell>
-                                  {new Date(
-                                    indicator.createdOn
-                                  ).toLocaleDateString()}
-                                </TableCell>
+                                                            </TableCell>
+                                                            
+                                                            <TableCell style={{ display: 'none' }}>Created Date</TableCell>
+                                                            <TableCell align="center">Preview</TableCell>
+                                                        </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        {filteredResults.map((indicator) => (
+                                                            <TableRow
+                                                                key={indicator.id}
+                                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                            >
+                                                                <TableCell component="th" scope="row">
+                                                                    {indicator.name}
+                                                                </TableCell>
+                                                                <TableCell>{(indicator.indicatorType === 'composite') ? 'Composite Indicator' : (indicator.indicatorType === 'multianalysis') ? 'Multi-Level Analysis Indicator' : indicator.indicatorType}</TableCell>
+                                                                <TableCell style={{ display: 'none' }}>{indicator.createdBy}</TableCell>
 
-                                <TableCell>
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "center",
-                                    }}
-                                  >
-                                    <Tooltip title="Open Preview">
-                                      <IconButton
-                                        color="priamry"
-                                        sx={{ padding: 0, maring: "0 4px" }}
-                                        onClick={() => {
-                                          handleShowVisualization(indicator);
-                                          setOpenDetails(!openDetails);
-                                        }}
-                                      >
-                                        <PreviewIcon />
-                                      </IconButton>
-                                    </Tooltip>
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                      {filteredResults.length === 0 && search != "" && (
-                        <div
-                          style={{ display: "flex", justifyContent: "center" }}
+                                                                <TableCell>
+                                                                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                                                        <Tooltip title="Open Preview">
+                                                                            <IconButton color="priamry" sx={{ padding: 0, maring: '0 4px' }} onClick={() => {
+                                                                                handleShowVisualization(indicator);
+                                                                                setOpenDetails(!openDetails);
+                                                                            }}>
+                                                                                <PreviewIcon />
+                                                                            </IconButton>
+                                                                        </Tooltip>
+                                                                    </div>
+                                                                </TableCell>
+                                                            </TableRow>))}
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                            {(filteredResults.length === 0 && search != "") && (
+                                                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                                    <span style={{ fontSize: '14px', fontWeight: '500', color: '#80868b', margin: '30px' }}>
+                                                        No indicator found with search term: "{search}".
+                                                    </span>
+                                                </div>
+                                            )}
+                                            {(userDefinedIndicators.length === 0) && (
+                                                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                                    <span style={{ fontSize: '14px', fontWeight: '500', color: '#80868b', margin: '30px' }}>
+                                                        No user defined indicators found.
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </Grid>
+                        </Grid>
+                        {/* Dialog to preview the indicators specified for the question*/}
+                        <Dialog
+                            fullWidth
+                            maxWidth="sm"
+                            open={openDetails}
+                            onClose={() => setOpenDetails(!openDetails)}
+                            aria-labelledby="form-dialog-title"
                         >
-                          <span
-                            style={{
-                              fontSize: "14px",
-                              fontWeight: "500",
-                              color: "#80868b",
-                              margin: "30px",
-                            }}
-                          >
-                            No indicator found with search term: "{search}".
-                          </span>
-                        </div>
-                      )}
-                      {userDefinedIndicators.length === 0 && (
-                        <div
-                          style={{ display: "flex", justifyContent: "center" }}
-                        >
-                          <span
-                            style={{
-                              fontSize: "14px",
-                              fontWeight: "500",
-                              color: "#80868b",
-                              margin: "30px",
-                            }}
-                          >
-                            No user defined indicators found.
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                            {!loading ? (
+                                <>
+                                    <DialogTitle id="form-dialog-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #C9C9C9' }}>
+                                        <span>Preview: {visData.name}</span>
+                                        <IconButton onClick={() => setOpenDetails(!openDetails)}>
+                                            <CloseIcon />
+                                        </IconButton>
+                                    </DialogTitle>
+                                    <DialogContent>
+                                        <Preview viz={visData} />
+                                    </DialogContent>
+                                </>
+                            ) : (
+                                <Grid container direction="column" alignItems="center" sx={{ mt: 5 }}>
+                                    <CircularProgress sx={{ mb: 1 }} />
+                                    <Typography>Loading indicator</Typography>
+                                </Grid>
+                            )}
+                            <DialogActions>
+                                <Button onClick={() => setOpenDetails(!openDetails)}> Close </Button>
+                            </DialogActions>
+                        </Dialog>
+                        {/**@author Louis Born <louis.born@stud.uni-due.de> */}
+                        <ModalMessage
+                            dialogTitle={"Please note"}
+                            dialogPrimaryContext={`All the combining basic indicators MUST apply the same analytics method, i.e., Count.`}
+                            openDialog={feedback.openFeedbackStartCompositeIndicator}
+                            setOpenDialog={() => handleFeedback("openFeedbackStartCompositeIndicator", feedback.openFeedbackStartCompositeIndicator)}
+                            primaryAction={() => navigate("/indicator/create-composite")}
+                            primaryButton={"Continue"}
+                        />
+                        {/**@author Louis Born <louis.born@stud.uni-due.de> */}
+                        <ModalMessage
+                            dialogTitle={"Please note"}
+                            dialogPrimaryContext={`All the combining basic indicators MUST have at least one common attribute, i.e., student ID.`}
+                            openDialog={feedback.openFeedbackStartMultiLevelIndicator}
+                            setOpenDialog={() => handleFeedback("openFeedbackStartMultiLevelIndicator", feedback.openFeedbackStartMultiLevelIndicator)}
+                            primaryAction={() => navigate("/indicator/create-multi-level")}
+                            primaryButton={"Continue"}
+                        />
+
+                    </div >
                 </div>
-              </Grid>
-            </Grid>
-            {/* Dialog to preview the indicators specified for the question*/}
-            <Dialog
-              fullWidth
-              maxWidth="sm"
-              open={openDetails}
-              onClose={() => setOpenDetails(!openDetails)}
-              aria-labelledby="form-dialog-title"
-            >
-              {!loading ? (
-                <>
-                  <DialogTitle
-                    id="form-dialog-title"
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      borderBottom: "1px solid #C9C9C9",
-                    }}
-                  >
-                    <span>Preview: {visData.name}</span>
-                    <IconButton onClick={() => setOpenDetails(!openDetails)}>
-                      <CloseIcon />
-                    </IconButton>
-                  </DialogTitle>
-                  <DialogContent>
-                    <Preview viz={visData} />
-                  </DialogContent>
-                </>
-              ) : (
-                <Grid
-                  container
-                  direction="column"
-                  alignItems="center"
-                  sx={{ mt: 5 }}
-                >
-                  <CircularProgress sx={{ mb: 1 }} />
-                  <Typography>Loading indicator</Typography>
-                </Grid>
-              )}
-              <DialogActions>
-                <Button onClick={() => setOpenDetails(!openDetails)}>
-                  {" "}
-                  Close{" "}
-                </Button>
-              </DialogActions>
-            </Dialog>
-            {/**@author Louis Born <louis.born@stud.uni-due.de> */}
-            <ModalMessage
-              dialogTitle={"Please note"}
-              dialogPrimaryContext={`All the combining basic indicators MUST apply the same analytics method, i.e., Count.`}
-              openDialog={feedback.openFeedbackStartCompositeIndicator}
-              setOpenDialog={() =>
-                handleFeedback(
-                  "openFeedbackStartCompositeIndicator",
-                  feedback.openFeedbackStartCompositeIndicator
-                )
-              }
-              primaryAction={() => navigate("/indicator/create-composite")}
-              primaryButton={"Continue"}
-            />
-            {/**@author Louis Born <louis.born@stud.uni-due.de> */}
-            <ModalMessage
-              dialogTitle={"Please note"}
-              dialogPrimaryContext={`All the combining basic indicators MUST have at least one common attribute, i.e., student ID.`}
-              openDialog={feedback.openFeedbackStartMultiLevelIndicator}
-              setOpenDialog={() =>
-                handleFeedback(
-                  "openFeedbackStartMultiLevelIndicator",
-                  feedback.openFeedbackStartMultiLevelIndicator
-                )
-              }
-              primaryAction={() => navigate("/indicator/create-multi-level")}
-              primaryButton={"Continue"}
-            />
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
+            </div>
+        </>
+    );
+};
