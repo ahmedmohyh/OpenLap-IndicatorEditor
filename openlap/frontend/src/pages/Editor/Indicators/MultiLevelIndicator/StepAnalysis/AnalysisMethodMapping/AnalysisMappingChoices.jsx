@@ -45,7 +45,7 @@ export default function AnalysisMappingChoices(props) {
         name={analysisInput.title}
         isMandatory={analysisInput.required}
         allowsMultipleSelections={false}
-        helper={'"Define grouping column to categorize data accurately'}
+        helper={'test'}
       >
         <MenuSingleSelect
           name={analysisInput.title}
