@@ -42,11 +42,18 @@ import { getUserQuestionsAndIndicators } from "../../../utils/redux/reducers/red
 import { scrollToTop } from "../../../utils/utils";
 import config from "./config";
 import CloseIcon from "@mui/icons-material/Close";
-import ConditionalSelectionRender from "../Common/ConditionalSelectionRender/ConditionalSelectionRender";
 import SelectContainer from "../Common/SelectContainer/SelectContainer";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import MenuSingleSelect from "../Common/MenuSingleSelect/MenuSingleSelect";
 
-const indicatorTypes = ["Basic Indicator", "Composite Indicator"];
+const indicatorTypes = [
+  "Basic Indicator",
+  "Composite Indicator",
+  "Multi-level Indicator",
+];
 
 const Section = styled("div")(() => ({
   display: "flex",
@@ -79,7 +86,6 @@ export default function Dashboard() {
   );
 
   const [visData, setVisData] = useState({});
-  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(null);
   const [openDetails, setOpenDetails] = useState(false);
   const [indicators, setIndicators] = useState([]);
@@ -88,9 +94,41 @@ export default function Dashboard() {
     openFeedbackStartMultiLevelIndicator: false,
   });
 
-  const filteredResults = indicators.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const [selectedDate, setSelectedDate] = React.useState(null);
+  const [selectedType, setSelectedType] = React.useState("");
+  const [search, setSearch] = useState("");
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
+  const handleSelectTypeFilter = (event, value) => {
+    setSelectedType(value);
+  };
+
+  const searchByIndicatorName = (e) => {
+    const newSearchTerm = e.target.value;
+    setSearch(newSearchTerm);
+  };
+
+  // filter on the search term, type, and date
+  const filteredResults = indicators.filter((item) => {
+    // filter by name
+    const nameMatches = item.name.toLowerCase().includes(search.toLowerCase());
+
+    // filter by type
+    const typeMatches = selectedType
+      ? item.indicatorType === selectedType
+      : true;
+
+    // filter by date
+    const dateMatches = selectedDate
+      ? new Date(item.createdOn).toDateString() ===
+        new Date(selectedDate).toDateString()
+      : true;
+
+    return nameMatches && typeMatches && dateMatches;
+  });
 
   const handleShowVisualization = async (indicator) => {
     setLoading(true);
@@ -98,11 +136,6 @@ export default function Dashboard() {
       setVisData(result);
       setLoading(false);
     });
-  };
-
-  const searchByIndicatorName = (e) => {
-    const newSearchTerm = e.target.value;
-    setSearch(newSearchTerm);
   };
 
   const handleConfirmIndicatorChoice = (indicatorType) => {
@@ -306,39 +339,62 @@ export default function Dashboard() {
                           <TableHead>
                             <TableRow>
                               <TableCell>
-                                Indicator Name
-                                <TextField
-                                  type="search"
-                                  fullWidth
-                                  sx={{ backgroundColor: "#f1f3f4" }}
-                                  placeholder="Search"
-                                  onChange={searchByIndicatorName}
-                                  InputProps={{
-                                    endAdornment: (
-                                      <InputAdornment position="end">
-                                        <SearchIcon></SearchIcon>
-                                      </InputAdornment>
-                                    ),
-                                  }}
-                                />
+                                <Box display="flex" flexDirection="column">
+                                  <div> <strong>Indicator Name</strong> </div>
+                                  <TextField
+                                    type="search"
+                                    fullWidth
+                                    sx={{ backgroundColor: "#f1f3f4" }}
+                                    placeholder="Search"
+                                    onChange={searchByIndicatorName}
+                                    InputProps={{
+                                      endAdornment: (
+                                        <InputAdornment position="end">
+                                          <SearchIcon></SearchIcon>
+                                        </InputAdornment>
+                                      ),
+                                    }}
+                                  />
+                                </Box>
+                              </TableCell>
+
+                              <TableCell style={{ width: "300px" }}>
+                                <Box display="flex" flexDirection="column">
+                                  <div><strong>Type </strong> </div>
+                                  <SelectContainer
+                                    name={"Type filter"}
+                                    isMandatory={false}
+                                    allowsMultipleSelections={false}
+                                    hideDesc={true}
+                                  >
+                                    <MenuSingleSelect
+                                      name={"Type"}
+                                      dataSource={indicatorTypes}
+                                      itemName={selectedType}
+                                      handleChange={handleSelectTypeFilter}
+                                    />
+                                  </SelectContainer>
+                                </Box>
                               </TableCell>
 
                               <TableCell>
-                                Type
-                                <SelectContainer
-                                  name={"Type filter"}
-                                  isMandatory={false}
-                                  allowsMultipleSelections={false}
-                                >
-                                  <MenuSingleSelect
-                                    name={"Type"}
-                                    dataSource={indicatorTypes}
-                                    itemName={""}
-                                  />
-                                </SelectContainer>
+                                <Box display="flex" flexDirection="column">
+                                  <div><strong>Creation date</strong></div>
+                                  <LocalizationProvider
+                                    style={{ marginTop: "-9px" }}
+                                    dateAdapter={AdapterDayjs}
+                                  >
+                                    <DemoContainer components={["DatePicker"]}>
+                                      <DatePicker
+                                        label="Pickup a date"
+                                        value={selectedDate}
+                                        onChange={handleDateChange}
+                                      />
+                                    </DemoContainer>
+                                  </LocalizationProvider>
+                                </Box>
                               </TableCell>
 
-                              <TableCell>Created Date</TableCell>
                               <TableCell align="center">Preview</TableCell>
                             </TableRow>
                           </TableHead>
@@ -355,6 +411,7 @@ export default function Dashboard() {
                                 <TableCell component="th" scope="row">
                                   {indicator.name}
                                 </TableCell>
+
                                 <TableCell>
                                   {indicator.indicatorType === "composite"
                                     ? "Composite Indicator"
@@ -363,7 +420,13 @@ export default function Dashboard() {
                                     ? "Multi-Level Analysis Indicator"
                                     : indicator.indicatorType}
                                 </TableCell>
-                                <TableCell>{new Date(indicator.createdOn).toLocaleDateString()}</TableCell>
+
+                                <TableCell>
+                                  {new Date(
+                                    indicator.createdOn
+                                  ).toLocaleDateString()}
+                                </TableCell>
+
                                 <TableCell>
                                   <div
                                     style={{
