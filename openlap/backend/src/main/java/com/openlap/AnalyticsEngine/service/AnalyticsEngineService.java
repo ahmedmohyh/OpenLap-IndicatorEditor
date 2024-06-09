@@ -1098,6 +1098,7 @@ public class AnalyticsEngineService {
                 //indicatorResponse.setComposite(indicator.isComposite());
                 indicatorResponse.setIndicatorType(triad.getIndicatorReference().getIndicatorType());
                 indicatorResponse.setCreatedBy(triad.getCreatedBy());
+                indicatorResponse.setCreatedOn(triad.getCreatedOn());
 
                 indicatorResponses.add(indicatorResponse);
             }
@@ -1343,6 +1344,7 @@ public class AnalyticsEngineService {
             //indicatorResponse.setComposite(indicator.isComposite());
             indicatorResponse.setIndicatorType(triad.getIndicatorReference().getIndicatorType());
             indicatorResponse.setCreatedBy(triad.getCreatedBy());
+            indicatorResponse.setCreatedOn(triad.getCreatedOn());
             indicatorResponse.setOutputs(triad.getOpenLAPDataSet());
             indicators.add(indicatorResponse);
             System.out.println("indicator " + indicatorResponse);
@@ -2447,6 +2449,7 @@ public class AnalyticsEngineService {
         //indicatorResponse.setComposite(indicator.isComposite());
         indicatorResponse.setIndicatorType(triad.getIndicatorReference().getIndicatorType());
         indicatorResponse.setCreatedBy(triad.getCreatedBy());
+        indicatorResponse.setCreatedOn(triad.getCreatedOn());
 
         return indicatorResponse;
     }

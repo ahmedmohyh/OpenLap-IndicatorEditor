@@ -132,6 +132,9 @@ export default function CompositeIndicator() {
             setOpenDialog={() => handleFeedback("openFeedbackSaveModal", feedback.openFeedbackSaveModal)}
             primaryAction={() => navigate("/dashboard")}
             primaryButton={"View Dashboard"}
+            secondaryAction={() => window.location.reload()}
+            secondaryButton={"Create New Composite Indicator"}
+
           />
           {/**@author Louis Born <louis.born@stud.uni-due.de> */}
           <ModalMessage

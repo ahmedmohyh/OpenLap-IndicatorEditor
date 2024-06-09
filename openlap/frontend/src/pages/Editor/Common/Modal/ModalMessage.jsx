@@ -46,7 +46,7 @@ export default function ModalMessage(props) {
           <Typography variant="h6"><b>{dialogTitle}</b></Typography>
         </Grid>
       </DialogTitle>
-
+  
       <DialogContent>
         <DialogContentText>
           <Box> {dialogPrimaryContext} </Box>
@@ -55,24 +55,29 @@ export default function ModalMessage(props) {
           <Box> {dialogSecondaryContext} </Box>
         </DialogContentText>
       </DialogContent>
-
+  
       <DialogActions>
-        <Button onClick={tertiaryAction} size="large" color="inherit">
-          {tertiaryButton}
-        </Button>
-        {secondaryButton ? <Button variant='outlined' onClick={secondaryAction}>
-          {secondaryButton}
-        </Button> : ""}
-        {primaryButton === "error" || primaryButton === "remove" || primaryButton === "delete" || primaryButton === "reset" ? (
-          <Button variant='contained' onClick={primaryAction}>
-            {primaryButton}
+        {secondaryButton && (
+          <Button variant='outlined' onClick={secondaryAction}>
+            {secondaryButton}
           </Button>
-        ) : <Button variant='contained' onClick={primaryAction} color="primary">
+        )}
+        <Box sx={{ flexGrow: 1 }} />
+        {tertiaryButton && (
+          <Button onClick={tertiaryAction} size="large" color="inherit">
+            {tertiaryButton}
+          </Button>
+        )}
+        <Button 
+          variant='contained' 
+          onClick={primaryAction} 
+          color={["error", "remove", "delete", "reset"].includes(primaryButton) ? "error" : "primary"}
+        >
           {primaryButton}
         </Button>
-        }
       </DialogActions>
     </Dialog>
   )
+  
 }
 

@@ -13,6 +13,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.3",
+    "@material-ui/pickers": "^3.3.11",
     "@mui/icons-material": "^5.11.16",
     "@mui/lab": "^5.0.0-alpha.134",
     "@mui/material": "^5.13.6",
@@ -28,6 +29,7 @@
     "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.0",
+    "react-datetime-picker": "^6.0.1",
     "react-dom": "^18.2.0",
     "react-json-editor-ajrm": "^2.5.14",
     "react-json-editor-ui": "^1.0.9",
@@ -38,7 +40,7 @@
     "react-router-dom": "^6.14.1",
     "redux-devtools-extension": "^2.13.9",
     "redux-saga": "^1.2.3",
-    "sweetalert2": "^11.10.5",
+    "sweetalert2": "^11.6.13",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
