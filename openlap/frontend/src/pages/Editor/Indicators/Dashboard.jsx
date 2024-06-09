@@ -24,36 +24,8 @@ import {
   Tooltip,
   Typography,
   styled,
-  AppBar,
-  Breadcrumbs,
-  Button,
-  CircularProgress,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  IconButton,
-  InputAdornment,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-  Toolbar,
-  Tooltip,
-  Typography,
-  styled,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import {
-  getAllPlatforms,
-  resetIndicatorSession,
-} from "../../../utils/redux/reducers/indicatorEditor";
 import {
   getAllPlatforms,
   resetIndicatorSession,
@@ -64,7 +36,6 @@ import { showVisualization } from "../../../utils/backend";
 import Preview from "./Preview/Preview";
 import Box from "@mui/material/Box";
 import { createNewIndicatorRequest } from "../../../utils/redux/reducers/gqiEditor";
-import PreviewIcon from "@mui/icons-material/Preview";
 import PreviewIcon from "@mui/icons-material/Preview";
 import ModalMessage from "../Common/Modal/ModalMessage";
 import { getUserQuestionsAndIndicators } from "../../../utils/redux/reducers/reducer";
@@ -113,12 +84,6 @@ export default function Dashboard() {
   const userDefinedIndicators = useSelector(
     (state) => state.rootReducer.user.definedIndicators
   );
-  const indicatorSaveResponse = useSelector(
-    (state) => state.compositeEditorReducer.selectedData.indicatorResponseData
-  );
-  const userDefinedIndicators = useSelector(
-    (state) => state.rootReducer.user.definedIndicators
-  );
 
   const [visData, setVisData] = useState({});
   const [loading, setLoading] = useState(null);
@@ -151,9 +116,18 @@ export default function Dashboard() {
     // filter by name
     const nameMatches = item.name.toLowerCase().includes(search.toLowerCase());
 
+    // Map 'composite' and 'multianalysis' to their corresponding types
+    const typeMapping = {
+      composite: "Composite Indicator",
+      multianalysis: "Multi-level Indicator",
+    };
+
+    const mappedIndicatorType =
+      typeMapping[item.indicatorType] || item.indicatorType;
+
     // filter by type
     const typeMatches = selectedType
-      ? item.indicatorType === selectedType
+      ? mappedIndicatorType === selectedType
       : true;
 
     // filter by date
@@ -185,25 +159,7 @@ export default function Dashboard() {
       handleFeedbackStartMultiLevelIndicator();
     }
   };
-  const handleConfirmIndicatorChoice = (indicatorType) => {
-    if (indicatorType === "Basic Indicator") {
-      dispatch(createNewIndicatorRequest(indicatorType));
-      dispatch(resetIndicatorSession());
-      dispatch(getAllPlatforms());
-      navigate("/indicator/create-basic");
-    } else if (indicatorType === "Composite Indicator") {
-      handleFeedbackStartCompositeIndicator();
-    } else if (indicatorType === "Multi-level Indicator") {
-      handleFeedbackStartMultiLevelIndicator();
-    }
-  };
 
-  const handleFeedback = (name, value) => {
-    setFeedback(() => ({
-      ...feedback,
-      [name]: !value,
-    }));
-  };
   const handleFeedback = (name, value) => {
     setFeedback(() => ({
       ...feedback,
@@ -217,12 +173,6 @@ export default function Dashboard() {
       feedback.openFeedbackStartCompositeIndicator
     );
   };
-  const handleFeedbackStartCompositeIndicator = () => {
-    handleFeedback(
-      "openFeedbackStartCompositeIndicator",
-      feedback.openFeedbackStartCompositeIndicator
-    );
-  };
 
   const handleFeedbackStartMultiLevelIndicator = () => {
     handleFeedback(
@@ -230,23 +180,7 @@ export default function Dashboard() {
       feedback.openFeedbackStartMultiLevelIndicator
     );
   };
-  const handleFeedbackStartMultiLevelIndicator = () => {
-    handleFeedback(
-      "openFeedbackStartMultiLevelIndicator",
-      feedback.openFeedbackStartMultiLevelIndicator
-    );
-  };
 
-  const _createIndicatorItem = ({ item }) => {
-    const IndicatorItemContainer = styled("div")(() => ({
-      "&:hover": {
-        cursor: "pointer",
-        "& #item-paper": {
-          boxShadow:
-            "0px 2px 4px rgba(0, 0, 0, 0.2), 0px 4px 8px rgba(0, 0, 0, 0.14), 0px 8px 16px rgba(0, 0, 0, 0.12)",
-        },
-      },
-    }));
   const _createIndicatorItem = ({ item }) => {
     const IndicatorItemContainer = styled("div")(() => ({
       "&:hover": {
@@ -311,72 +245,7 @@ export default function Dashboard() {
       </IndicatorItemContainer>
     );
   };
-    return (
-      <IndicatorItemContainer
-        style={{ maxWidth: "250px" }}
-        onClick={() => handleConfirmIndicatorChoice(item.name)}
-      >
-        <Tooltip
-          title={<span style={{ fontSize: "16px" }}>{item.tooltip}</span>}
-        >
-          <div style={{ padding: "2px 5px" }}>
-            <Paper
-              id="item-paper"
-              elevation={0}
-              square={false}
-              sx={{
-                position: "relative",
-                width: "250px",
-                height: "150px",
-                padding: "16px",
-                border: "1px solid #dadce0",
-              }}
-            >
-              <img
-                width="225px"
-                height="auto"
-                src={item.img}
-                style={{
-                  position: "absolute",
-                  left: "50%",
-                  top: "50%",
-                  transform: "translate(-50%, -50%)",
-                }}
-              />
-            </Paper>
-            <div
-              style={{ paddingTop: "16px", fontSize: "14px", width: "250px" }}
-            >
-              {item.name}
-            </div>
-            <div
-              style={{
-                paddingTop: "4px",
-                fontSize: "12px",
-                color: "#5f6368",
-                width: "250px",
-              }}
-            >
-              {item.info}
-            </div>
-          </div>
-        </Tooltip>
-      </IndicatorItemContainer>
-    );
-  };
 
-  const _createNewIndicator = () => {
-    return (
-      <div>
-        <p style={{ marginTop: 0, fontSize: "16px" }}>Create new indicators</p>
-        <div style={{ display: "flex", gap: "32px" }}>
-          {Object.entries(config).map(([key, value]) => (
-            <_createIndicatorItem key={key} item={value} />
-          ))}
-        </div>
-      </div>
-    );
-  };
   const _createNewIndicator = () => {
     return (
       <div>
@@ -398,11 +267,6 @@ export default function Dashboard() {
     }
   }, [userDefinedIndicators]);
 
-  useEffect(() => {
-    dispatch(resetIndicatorSession());
-    dispatch(getUserQuestionsAndIndicators());
-    scrollToTop();
-  }, [dispatch, indicatorSaveResponse.length]);
   useEffect(() => {
     dispatch(resetIndicatorSession());
     dispatch(getUserQuestionsAndIndicators());
@@ -485,7 +349,10 @@ export default function Dashboard() {
                             <TableRow>
                               <TableCell>
                                 <Box display="flex" flexDirection="column">
-                                  <div> <strong>Indicator Name</strong> </div>
+                                  <div>
+                                    {" "}
+                                    <strong>Indicator Name</strong>{" "}
+                                  </div>
                                   <TextField
                                     type="search"
                                     fullWidth
@@ -505,7 +372,9 @@ export default function Dashboard() {
 
                               <TableCell style={{ width: "300px" }}>
                                 <Box display="flex" flexDirection="column">
-                                  <div><strong>Type </strong> </div>
+                                  <div>
+                                    <strong>Type </strong>{" "}
+                                  </div>
                                   <SelectContainer
                                     name={"Type filter"}
                                     isMandatory={false}
@@ -524,7 +393,9 @@ export default function Dashboard() {
 
                               <TableCell>
                                 <Box display="flex" flexDirection="column">
-                                  <div><strong>Creation date</strong></div>
+                                  <div>
+                                    <strong>Creation date</strong>
+                                  </div>
                                   <LocalizationProvider
                                     style={{ marginTop: "-9px" }}
                                     dateAdapter={AdapterDayjs}
