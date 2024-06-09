@@ -44,7 +44,6 @@ export default function ComponentPreview({
   selections,
   activeStep,
   handleFeedbackSave,
-  loadingLastStep,
 }) {
   const dispatch = useDispatch();
   const showSnackbar = useSnackbar();

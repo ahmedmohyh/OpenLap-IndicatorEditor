@@ -17,9 +17,6 @@ export default function BasicIndicator(props) {
     openFeedbackSaveModal: false,
   });
 
-  // Use useState to manage the loading state
-  const [loadingLastStep, setLoadingLastStep] = useState(false);
-
   const activeStep = useSelector((state) => state.indicatorEditorReducer.common.activeStep);
   const completedStep = useSelector((state) => state.indicatorEditorReducer.common.completedStep);
   const selectedAnalysisMethod = useSelector(state => state.indicatorEditorReducer.selectedData.analysisMethod);
@@ -156,17 +153,6 @@ export default function BasicIndicator(props) {
   const handleFeedbackSave = () => {
     handleFeedback("openFeedbackSaveModal", feedback.openFeedbackSaveModal);
   }
-
-  /*
-  * set the loading flag to true to show the spinner once clicked on the generate prview button
-  * <Author>Ahmed Mousa</Author>
-  */
-  const setLoadingFlag = () => {
-    setLoadingLastStep(true);
-    console.log("the value of the loading flag is: " + loadingLastStep);
-     
-   }
-
   const handleDiscardProgress = () => {
     handleFeedback("openDiscardProgressModal", feedback.openDiscardProgressModal);
   }
@@ -204,14 +190,13 @@ export default function BasicIndicator(props) {
             actions={[closeActionObject]}
             children={
               [
-                <ComponentStep key={'Basic_Component_Step'} setLoadingFlag={setLoadingFlag} />,
+                <ComponentStep key={'Basic_Component_Step'}  />,
                 <ComponentPreview
                   key={'Basic_Component_Preview'}
                   classes={classes}
                   selections={SELECTIONS}
                   activeStep={activeStep}
                   handleFeedbackSave={handleFeedbackSave}
-                  loadingLastStep = {loadingLastStep}
                 />
               ]
             }
