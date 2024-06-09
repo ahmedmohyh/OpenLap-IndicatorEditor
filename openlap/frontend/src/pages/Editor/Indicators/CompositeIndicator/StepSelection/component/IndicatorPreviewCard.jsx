@@ -67,6 +67,7 @@ export default function IndicatorPreviewCard(props) {
     const foobar = () => {
         console.log("hi there from whatever");
         styleProperty.isSelected ? setStyleProperty({
+            ...styleProperty,
             backgroundColor : "#fff",
             isSelected : false,
         }) : setStyleProperty({
@@ -78,7 +79,7 @@ export default function IndicatorPreviewCard(props) {
     };
 
     return (
-        <div style={cardStyle} onClick={foobar}>
+        <div style={cardStyle}>
             <div style={styleProperty}>
                 <div style={labelStyle}>Name:</div>
                 <div style={nameStyle}>{preview.name}</div>
