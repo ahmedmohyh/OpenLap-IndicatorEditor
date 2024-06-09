@@ -210,6 +210,8 @@ export default function BasicIndicator(props) {
             setOpenDialog={() => handleFeedback("openFeedbackSaveModal", feedback.openFeedbackSaveModal)}
             primaryAction={() => navigate("/dashboard")}
             primaryButton={"View Dashboard"}
+            secondaryAction={() => window.location.reload()}
+            secondaryButton={"Create New Basic Indicator"}
           />
           {/**@author Louis Born <louis.born@stud.uni-due.de> */}
           <ModalMessage

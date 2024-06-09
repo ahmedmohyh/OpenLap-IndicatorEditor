@@ -13,12 +13,12 @@ import HelpTooltip from "../HelpTooltip/HelpTooltip";
  * @author Louis Born <louis.born@stud.uni-due.de>
  */
 export default function SelectContainer(props) {
-    const { name, isMandatory, allowsMultipleSelections, helper, children } = props;
+    const { name, isMandatory, allowsMultipleSelections, helper, children, hideDesc } = props;
 
     return (
         <>
-            <Grid container style={{ marginTop: '24px' }}>
-                {name && <Grid item xs={12}>
+            <Grid container style={{ marginTop: hideDesc ? '0px' : '24px' }}>
+                {name && !hideDesc && <Grid item xs={12}>
                     <div style={{ fontSize: '12px', color: '#5F6368', marginBottom: '12px' }}>
                         {isMandatory ? <span style={{ color: 'red' }}>*</span> : <span>(Optional){' '}</span>}
                         Select <strong>{name}</strong>
