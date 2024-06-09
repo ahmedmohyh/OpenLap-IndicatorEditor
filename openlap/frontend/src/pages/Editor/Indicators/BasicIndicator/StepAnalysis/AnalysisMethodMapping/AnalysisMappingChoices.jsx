@@ -26,7 +26,7 @@ export default function AnalysisMappingChoices(props) {
         name={analysisInput.title}
         isMandatory={analysisInput.required}
         allowsMultipleSelections={false}
-        helper={'test'}
+        helper={'Select relevant items from the menu to specify the data your indicator will analyze'}
       >
         <MenuSingleSelect
           name={analysisInput.title}
