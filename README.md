@@ -25,6 +25,7 @@ This document outlines the workload distribution among team members for the proj
 | Issue ID | Deadline   | Ahmed | Mohamed | Ali | Aliyah | Ela | Mehdi | Leonie | Valerie | Marie |
 |----------|------------|-------|---------|-----|--------|-----|-------|--------|---------|-------|
 | 24        | 09.06.2024 | ✓     |         |     |    ✓    |     |       |      |         |       |
+| 14        | 09.06.2024 | ✓     |         |     |    ✓    |     |       |      |         |       |
 | 19        | 09.06.2024 |       | ✓       |     |        |     |       |    ✓   |         |       |
 | 7        | 09.06.2024 |       |          | ✓   |        |     |       |        |   ✓      |       |
 | 10       | 09.06.2024 |       |         |     |        |   ✓  |  ✓     |      |         | ✓      |
