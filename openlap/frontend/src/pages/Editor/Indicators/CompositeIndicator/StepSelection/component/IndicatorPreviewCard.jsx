@@ -78,6 +78,11 @@ export default function IndicatorPreviewCard(props) {
         console.log(JSON.stringify(styleProperty));
     };
 
+    const wrapperFunction = () => {
+        handleChange();
+        foobar();
+    }
+
     return (
         <div style={cardStyle}>
             <div style={styleProperty}>
@@ -90,10 +95,7 @@ export default function IndicatorPreviewCard(props) {
                         control={
                             <Checkbox
                                 checked={undefined} // Consider using a controlled checkbox 
-                                onChange={() => {
-                                    handleChange();
-                                    foobar();
-                                }}
+                                onChange={wrapperFunction}
                                 disabled={isDisabled}
                                 name={`${preview.id}@${preview.analyticsMethodId}`}
                                 color="primary"
