@@ -34,8 +34,3 @@ This document outlines the workload distribution among team members for the proj
 ## Notes
 - Tasks are marked with a ✓ under the team member responsible for completing them.
 - This table is a draft and may change as the project progresses.
-My notes:
-
-Where did we find the component: StepFilter(on line 128 with component ConditionalSelectionRender having the property isLoading) ->
-CircularIndeterminateLoader
-

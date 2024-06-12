@@ -12,7 +12,6 @@ import SnackbarType from "../BasicIndicator/enum/SnackbarType";
 import { compositeQueryWrapper } from "../../../../utils/ruleEngine/ruleGenerator";
 import nameValidator from "../../Helper/nameValidator";
 import imgNoPreview from '../../../../assets/img/vis-empty-state/no-indicator-preview.svg';
-import ConditionalSelectionRender from "../../Common/ConditionalSelectionRender/ConditionalSelectionRender";
 
 const Section = styled('div')(() => ({
     display: 'flex',
@@ -47,9 +46,6 @@ export default function ComponentPreview({ classes, selections, activeStep, hand
     const scriptCodeData = useSelector(state => state.indicatorEditorReducer.fetchedData.visualizationCode.scriptCode);
     const indicatorPreviewData = useSelector(state => state.compositeEditorReducer.selectedData.compositeIndicatorPreview);
     const errorMessage = useSelector(state => state.indicatorEditorReducer.fetchedData.visualizationCode.errorMessage);
-
-    const completePreviewStep = useSelector((state) => state.indicatorEditorReducer.common.completePreviewStep);
-
 
     const [errorInput, setErrorInput] = useState(false);
     const [selection, setSelection] = useState({ indicatorName: indicatorName ? indicatorName : "", errorMessage: "", });
@@ -138,27 +134,13 @@ export default function ComponentPreview({ classes, selections, activeStep, hand
                     ) : (errorMessage ? (
                         <Alert severity='error'>Error: Unable to generate visualization preview due to an error.</Alert>
                     ) : (
-                        <>
-                        {!displayCodeData && !completePreviewStep ? (
-                       <div  style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#5F6368', fontSize: '14px', minHeight: '156px' }}>
-                             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '16px', color: '#5F6368', fontSize: '14px', minHeight: '156px' }}>
-                               <img width="96px" height="96px" src={imgNoPreview} />
-                               Preview is available only when all steps are completed.
-                             </div>
-                           </div>
-                        ): (
-                           
-                           <ConditionalSelectionRender
-                             isRendered={true}
-                             isLoading={!displayCodeData && completePreviewStep}
-                             hasError={errorMessage}
-                             handleRefresh={() => { } }
-                           ></ConditionalSelectionRender>
-                        )}
-                           </>
-                    )
-                    )
-                    }
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#5F6368', fontSize: '14px', minHeight: '156px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '16px', color: '#5F6368', fontSize: '14px', minHeight: '156px' }}>
+                                <img width="96px" height="96px" src={imgNoPreview} />
+                                Preview is available only when all steps are completed.
+                            </div>
+                        </div>
+                    ))}
                 </Grid>
             </Section>
         );

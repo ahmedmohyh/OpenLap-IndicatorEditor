@@ -153,6 +153,7 @@ export default function BasicIndicator(props) {
   const handleFeedbackSave = () => {
     handleFeedback("openFeedbackSaveModal", feedback.openFeedbackSaveModal);
   }
+
   const handleDiscardProgress = () => {
     handleFeedback("openDiscardProgressModal", feedback.openDiscardProgressModal);
   }
@@ -190,7 +191,7 @@ export default function BasicIndicator(props) {
             actions={[closeActionObject]}
             children={
               [
-                <ComponentStep key={'Basic_Component_Step'}  />,
+                <ComponentStep key={'Basic_Component_Step'} />,
                 <ComponentPreview
                   key={'Basic_Component_Preview'}
                   classes={classes}
