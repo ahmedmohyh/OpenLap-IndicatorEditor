@@ -22,8 +22,7 @@ const config = {
         mandatory: false,
         multiple_selections: false,
         helper: (<span>
-            Choose the dataset from the desired <strong>Online Learning Platform</strong>. Online Learning Platforms are 
-        used by students for accessing course contents, forum discussions, sending assessments and more
+            Choose the timeframe
         </span>)
     }
 };
