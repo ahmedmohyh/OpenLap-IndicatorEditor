@@ -2343,15 +2343,36 @@ public class AnalyticsEngineService {
     }
 
     public void deleteIndicator(String indicatorId) {
-        Indicator result = em.find(Indicator.class, indicatorId);
-        if (result == null || indicatorId == null) {
+       // Indicator result = em.find(Indicator.class, indicatorId);
+
+        Triad triad = em.find(Triad.class, indicatorId);
+
+        if (triad == null || indicatorId == null) {
             throw new ItemNotFoundException("Indicator with id = {" + indicatorId + "} not found.", "2");
         } else {
+
+            // getting a list of indicator Ids
+            List<String> ids = triad.getIndicatorReference()
+                    .getIndicators()
+                    .values()
+                    .stream()
+                    .map(IndicatorEntry::getId) // Replace 'getId' with the actual method name if it's different
+                    .collect(Collectors.toList());
+
             em.getTransaction().begin();
-            em.remove(result);
+
+            // loop over the ids and get the indicator and then delete it in the transaction
+            for (String id : ids) {
+                Indicator indicator = em.find(Indicator.class, id);
+                //  em.getTransaction().begin();
+                em.remove(indicator);
+            }
+
+            em.remove(triad);
             em.getTransaction().commit();
-            em.close();
+           // em.close();
         }
+
     }
 
     public Triad getTriadById(String triadId) throws ItemNotFoundException {
