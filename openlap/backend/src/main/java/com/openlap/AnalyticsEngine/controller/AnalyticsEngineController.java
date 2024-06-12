@@ -155,6 +155,19 @@ public class AnalyticsEngineController {
         }
     }
 
+
+    @DeleteMapping("/deleteIndicator/{id}")
+    public
+    @ResponseBody
+    ResponseEntity<String> deleteIndicator(@PathVariable String id) {
+        try {
+            analyticsEngineService.deleteIndicator(id);
+            return new ResponseEntity<>("Operation successful!", HttpStatus.OK);
+        } catch (Exception e) {
+            throw new AnalyticsMethodsBadRequestException(e.getMessage());
+        }
+    }
+
     //	***************************************************************************************************************
     //	ANALYSIS METHODS END
     //	***************************************************************************************************************
