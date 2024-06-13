@@ -48,6 +48,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import MenuSingleSelect from "../Common/MenuSingleSelect/MenuSingleSelect";
+import ConditionalSelectionRender from "../Common/ConditionalSelectionRender/ConditionalSelectionRender";
 
 const indicatorTypes = [
   "Basic Indicator",
@@ -93,6 +94,7 @@ export default function Dashboard() {
     openFeedbackStartCompositeIndicator: false,
     openFeedbackStartMultiLevelIndicator: false,
   });
+  const [dashboardLoading, setdashboardLoading] = useState(false);
 
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [selectedType, setSelectedType] = React.useState("");
@@ -253,17 +255,30 @@ export default function Dashboard() {
   useEffect(() => {
     if (userDefinedIndicators.length > 0) {
       setIndicators(userDefinedIndicators[0].indicators);
-
+      //setting loading spinner because the indicators have been loaded;
+      setdashboardLoading(false);
       //console.log(userDefinedIndicators[0].indicators.createdBy);
     }
   }, [userDefinedIndicators]);
 
   useEffect(() => {
+    //setting the loading spinner to true until the user indicators have loaded;
+    setdashboardLoading(true)
     dispatch(resetIndicatorSession());
     dispatch(getUserQuestionsAndIndicators());
     scrollToTop();
   }, [dispatch, indicatorSaveResponse.length]);
 
+  /* To test the loading spinner with a delay of 10 seconds*/
+  /* useEffect(() => {
+    setdashboardLoading(true);
+    setTimeout(() => {
+      dispatch(resetIndicatorSession());
+      dispatch(getUserQuestionsAndIndicators());
+      scrollToTop();
+    }, 10000); // 10000 milliseconds = 10 seconds
+  }, [dispatch, indicatorSaveResponse.length]);  */
+  
   return (
     <>
       <div style={{ display: "flex", flexDirection: "column" }}>
@@ -537,6 +552,13 @@ export default function Dashboard() {
               </DialogActions>
             </Dialog>
             {/**@author Louis Born <louis.born@stud.uni-due.de> */}
+           {/**Loading spinner> */}
+           <ConditionalSelectionRender
+                  isRendered={true}
+                  isLoading={dashboardLoading}
+                  hasError={false}
+                  handleRefresh={() => { } }
+                ></ConditionalSelectionRender>
             <ModalMessage
               dialogTitle={"Please note"}
               dialogPrimaryContext={`All the combining basic indicators MUST apply the same analytics method, i.e., Count.`}
