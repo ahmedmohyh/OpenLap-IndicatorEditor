@@ -109,14 +109,20 @@ export default function Dashboard() {
   };
 
   const handleDeleteIndicator = () => {
-    console.log(
+    /* console.log(
       "the indicator that will be deleted is with the id: " +
         indicatorIdToBeDeleted
-    );
+    ); */
     deleteIndicator(indicatorIdToBeDeleted);
     handleClose();
-    dispatch(getUserQuestionsAndIndicators());
-    setIndicators(userDefinedIndicators[0].indicators);
+
+    // adding the time out because I want to wait till the result of the deletion comes. 
+    // think of using a promise here instead of deleion
+    setTimeout(() => {
+      dispatch(resetIndicatorSession());
+      dispatch(getUserQuestionsAndIndicators());
+      scrollToTop();
+    }, 2000); // 10000 milliseconds = 10 seconds
   };
 
   const [selectedDate, setSelectedDate] = React.useState(null);
