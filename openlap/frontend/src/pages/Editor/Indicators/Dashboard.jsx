@@ -147,9 +147,18 @@ export default function Dashboard() {
     // filter by name
     const nameMatches = item.name.toLowerCase().includes(search.toLowerCase());
 
+    // Map 'composite' and 'multianalysis' to their corresponding types
+    const typeMapping = {
+      composite: "Composite Indicator",
+      multianalysis: "Multi-level Indicator",
+    };
+
+    const mappedIndicatorType =
+      typeMapping[item.indicatorType] || item.indicatorType;
+
     // filter by type
     const typeMatches = selectedType
-      ? item.indicatorType === selectedType
+      ? mappedIndicatorType === selectedType
       : true;
 
     // filter by date
@@ -386,7 +395,10 @@ export default function Dashboard() {
                             <TableRow>
                               <TableCell>
                                 <Box display="flex" flexDirection="column">
-                                  <div> <strong>Indicator Name</strong> </div>
+                                  <div>
+                                    {" "}
+                                    <strong>Indicator Name</strong>{" "}
+                                  </div>
                                   <TextField
                                     type="search"
                                     fullWidth
@@ -406,7 +418,9 @@ export default function Dashboard() {
 
                               <TableCell style={{ width: "300px" }}>
                                 <Box display="flex" flexDirection="column">
-                                  <div><strong>Type </strong> </div>
+                                  <div>
+                                    <strong>Type </strong>{" "}
+                                  </div>
                                   <SelectContainer
                                     name={"Type filter"}
                                     isMandatory={false}
@@ -425,7 +439,9 @@ export default function Dashboard() {
 
                               <TableCell>
                                 <Box display="flex" flexDirection="column">
-                                  <div><strong>Creation date</strong></div>
+                                  <div>
+                                    <strong>Creation date</strong>
+                                  </div>
                                   <LocalizationProvider
                                     style={{ marginTop: "-9px" }}
                                     dateAdapter={AdapterDayjs}

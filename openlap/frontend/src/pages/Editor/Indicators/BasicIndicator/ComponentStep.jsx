@@ -13,6 +13,7 @@ import {
     saveIndicatorPreview,
     setActiveIndicatorStep,
     setCompletedIndicatorStep,
+    setCompletePreviewStep,
     setGeneratedVisualizationCode
 } from "../../../../utils/redux/reducers/indicatorEditor";
 import StepDataset from "./StepDataset/StepDataset";
@@ -31,7 +32,6 @@ export default function ComponentStep(props) {
     const dispatch = useDispatch();
     const [completed, setCompleted] = useState([]);
     const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
-
     const activeStep = useSelector((state) => state.indicatorEditorReducer.common.activeStep);
     const completedStep = useSelector((state) => state.indicatorEditorReducer.common.completedStep);
     const selectedAnalysisMethod = useSelector(state => state.indicatorEditorReducer.selectedData.analysisMethod);
@@ -89,6 +89,9 @@ export default function ComponentStep(props) {
         }
         dispatch(generateIndicatorPreview(getIndicatorPreviewCode));
         dispatch(saveIndicatorPreview(getIndicatorPreviewCode));
+        dispatch(setCompletePreviewStep()); 
+
+        // setLoadingFlag();
     }
 
     // Methods to handle general step component functionality
