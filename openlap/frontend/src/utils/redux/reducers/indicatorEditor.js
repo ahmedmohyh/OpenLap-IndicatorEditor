@@ -27,6 +27,7 @@ export const GET_ALL_FILTER_DATA = "getAllFilterData";
 export const SET_ALL_FILTER_DATA = "setAllFilterData";
 export const RESET_FILTER_DATA = "resetFilterData";
 export const SELECT_DESELECT_ACTIVITY_NAME = "selectDeselectActivityName";
+export const CLEAR_ACTIVITIES_AND_USER_FILTERS = "clearActivitiesAndUserFilters";
 export const SELECT_DESELECT_CONTEXT_ACTIVITY = "selectDeselectContextActivity";
 export const SELECT_DESELECT_RESULT = "selectDeselectResult";
 export const SET_ACTIVITY_ATTRIBUTES = "setActivityAttributes";
@@ -151,6 +152,8 @@ export const setAllFilterData = (filterData) => ({
   type: SET_ALL_FILTER_DATA,
   payload: {filterData}
 })
+
+
 export const resetFilterData = () => ({
   type: RESET_FILTER_DATA,
 })
@@ -158,6 +161,11 @@ export const selectDeselectActivityName = (selectedActivityName) => ({
   type: SELECT_DESELECT_ACTIVITY_NAME,
   payload: {selectedActivityName}
 })
+
+export const clearActivitiesAndUserFilters = () => ({
+  type: CLEAR_ACTIVITIES_AND_USER_FILTERS,
+})
+
 export const getActivityExtensionIdValues = (activityFeatures, details) => ({
   type: GET_ACTIVITY_EXTENSION_ID_VALUES,
   payload: {activityFeatures, details}
@@ -608,6 +616,15 @@ export default function editorReducer(state = initialState, action) {
         //   activityName: action.payload.activityNameData.length !== 0 ? action.payload.activityNameData : []
         // }
       }
+      case CLEAR_ACTIVITIES_AND_USER_FILTERS:
+        return {
+          ...state,
+          selectedData : {
+            ...state.selectedData,
+            activityName: [],
+          },
+  
+        }
     case SELECT_DESELECT_CONTEXT_ACTIVITY:
       return {
         ...state,
