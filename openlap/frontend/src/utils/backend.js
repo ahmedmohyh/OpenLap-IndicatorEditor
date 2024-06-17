@@ -88,6 +88,11 @@ export const signUp = async (data) => {
   });
 };
 
+export const deleteIndicator = async (id) => {
+  await Backend.delete(`/AnalyticsEngine/deleteIndicator/${id}`, {
+  });
+};
+
 export const showVisualization = async (indicator) => {
   try {
     let vizQuery = indicatorResponseToQueryWrapper(indicator);

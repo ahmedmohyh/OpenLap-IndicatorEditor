@@ -32,7 +32,7 @@ export default function VizMappingChoices(props) {
         name={vizDataInput.title}
         isMandatory={vizDataInput.required}
         allowsMultipleSelections={false}
-        helper={'test'}
+        helper={'Set up your chart preferences to visualize your data effectively'}
       >
         <MenuSingleSelect
           name={vizDataInput.title}

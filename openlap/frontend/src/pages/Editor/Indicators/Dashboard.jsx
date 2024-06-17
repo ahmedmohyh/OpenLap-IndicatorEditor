@@ -33,6 +33,7 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import { useDispatch, useSelector } from "react-redux";
 import { showVisualization } from "../../../utils/backend";
+import { deleteIndicator } from "../../../utils/backend";
 import Preview from "./Preview/Preview";
 import Box from "@mui/material/Box";
 import { createNewIndicatorRequest } from "../../../utils/redux/reducers/gqiEditor";
@@ -49,6 +50,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import MenuSingleSelect from "../Common/MenuSingleSelect/MenuSingleSelect";
 import ConditionalSelectionRender from "../Common/ConditionalSelectionRender/ConditionalSelectionRender";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const indicatorTypes = [
   "Basic Indicator",
@@ -95,6 +97,33 @@ export default function Dashboard() {
     openFeedbackStartMultiLevelIndicator: false,
   });
   const [dashboardLoading, setdashboardLoading] = useState(false);
+
+  const [feedBackDelete, setfeedBackDelete] = useState(false);
+  const [indicatorNameToBeDeleted, setindicatorNameToBeDeleted] = useState("");
+  const [indicatorIdToBeDeleted, setindicatorIdToBeDeleted] = useState("");
+
+  const handleClose = () => {
+    setfeedBackDelete(false);
+    setindicatorNameToBeDeleted("");
+    setindicatorIdToBeDeleted("");
+  };
+
+  const handleDeleteIndicator = () => {
+    /* console.log(
+      "the indicator that will be deleted is with the id: " +
+        indicatorIdToBeDeleted
+    ); */
+    deleteIndicator(indicatorIdToBeDeleted);
+    handleClose();
+
+    // adding the time out because I want to wait till the result of the deletion comes. 
+    // think of using a promise here instead of deleion
+    setTimeout(() => {
+      dispatch(resetIndicatorSession());
+      dispatch(getUserQuestionsAndIndicators());
+      scrollToTop();
+    }, 2000); // 10000 milliseconds = 10 seconds
+  };
 
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [selectedType, setSelectedType] = React.useState("");
@@ -267,6 +296,8 @@ export default function Dashboard() {
       //setting loading spinner because the indicators have been loaded;
       setdashboardLoading(false);
       //console.log(userDefinedIndicators[0].indicators.createdBy);
+
+      //console.log(userDefinedIndicators[0].indicators);
     }
   }, [userDefinedIndicators]);
 
@@ -427,6 +458,8 @@ export default function Dashboard() {
                               </TableCell>
 
                               <TableCell align="center">Preview</TableCell>
+
+                              <TableCell align="center">Delete</TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
@@ -475,6 +508,33 @@ export default function Dashboard() {
                                         }}
                                       >
                                         <PreviewIcon />
+                                      </IconButton>
+                                    </Tooltip>
+                                  </div>
+                                </TableCell>
+
+                                <TableCell>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <Tooltip title="Delete Indicator">
+                                      <IconButton
+                                        color="error"
+                                        sx={{ padding: 0, maring: "0 4px" }}
+                                        onClick={() => {
+                                          setfeedBackDelete(true);
+                                          setindicatorNameToBeDeleted(
+                                            indicator.name
+                                          );
+                                          setindicatorIdToBeDeleted(
+                                            indicator.id
+                                          );
+                                        }}
+                                      >
+                                        <DeleteIcon />
                                       </IconButton>
                                     </Tooltip>
                                   </div>
@@ -601,6 +661,19 @@ export default function Dashboard() {
               }
               primaryAction={() => navigate("/indicator/create-multi-level")}
               primaryButton={"Continue"}
+            />
+            {/**@author Ahmed Mousa  <ahmed.mousa@stud.uni-due.de> */}
+            <ModalMessage
+              dialogTitle={"Delete indicator: " + indicatorNameToBeDeleted}
+              dialogPrimaryContext={
+                `Are you sure you want to delete the indicator: ` +
+                indicatorNameToBeDeleted
+              } // to do add the indicator name
+              openDialog={feedBackDelete}
+              primaryAction={handleDeleteIndicator} // to do add the delete indicator function
+              primaryButton={"yes"}
+              tertiaryAction={handleClose} // to do add the close modal function
+              tertiaryButton={"No"}
             />
           </div>
         </div>
