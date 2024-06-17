@@ -98,6 +98,8 @@ export default function Dashboard() {
     openFeedbackStartMultiLevelIndicator: false,
   });
   const [dashboardLoading, setdashboardLoading] = useState(false);
+  const [ShareCopyIndicator, setShareCopyIndicator] = useState('');
+
 
   const [feedBackDelete, setfeedBackDelete] = useState(false);
   const [indicatorNameToBeDeleted, setindicatorNameToBeDeleted] = useState("");
@@ -510,6 +512,7 @@ export default function Dashboard() {
                                         onClick={() => {
                                           handleShowVisualization(indicator);
                                           setOpenDetails(!openDetails);
+                                          setShareCopyIndicator(indicator.indicatorRequestCode)
                                         }}
                                       >
                                         <PreviewIcon />
@@ -627,7 +630,8 @@ export default function Dashboard() {
                     }}
                   >
                     <span>Preview: {visData.name}</span>
-                    <IconButton onClick={() => setOpenDetails(!openDetails)}>
+                    <IconButton onClick={() => setOpenDetails(!openDetails)
+                    }>
                       <CloseIcon />
                     </IconButton>
                   </DialogTitle>
@@ -650,7 +654,7 @@ export default function Dashboard() {
                 <Box>
 
                 <Button onClick={() => {
-                        navigator.clipboard.writeText(indicator.indicatorRequestCode);
+                        navigator.clipboard.writeText(ShareCopyIndicator);
                       }}>
                 <ContentCopyIcon /> Copy
                   </Button>
