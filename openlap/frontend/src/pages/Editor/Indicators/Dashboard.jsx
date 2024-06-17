@@ -51,6 +51,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import MenuSingleSelect from "../Common/MenuSingleSelect/MenuSingleSelect";
 import ConditionalSelectionRender from "../Common/ConditionalSelectionRender/ConditionalSelectionRender";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 const indicatorTypes = [
   "Basic Indicator",
@@ -297,7 +298,7 @@ export default function Dashboard() {
       setdashboardLoading(false);
       //console.log(userDefinedIndicators[0].indicators.createdBy);
 
-      //console.log(userDefinedIndicators[0].indicators);
+      console.log(userDefinedIndicators[0].indicators);
     }
   }, [userDefinedIndicators]);
 
@@ -459,6 +460,10 @@ export default function Dashboard() {
 
                               <TableCell align="center">Preview</TableCell>
 
+                              <TableCell align="center">Share</TableCell>
+
+                              
+
                               <TableCell align="center">Delete</TableCell>
                             </TableRow>
                           </TableHead>
@@ -508,6 +513,27 @@ export default function Dashboard() {
                                         }}
                                       >
                                         <PreviewIcon />
+                                      </IconButton>
+                                    </Tooltip>
+                                  </div>
+                                </TableCell>
+
+                                <TableCell>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <Tooltip title="">
+                                      <IconButton
+                                        color="priamry"
+                                        sx={{ padding: 0, maring: "0 4px" }}
+                                        onClick={() => {
+                                          navigator.clipboard.writeText(indicator.indicatorRequestCode);
+                                        }}
+                                      >
+                                        <ContentCopyIcon />
                                       </IconButton>
                                     </Tooltip>
                                   </div>
@@ -620,12 +646,34 @@ export default function Dashboard() {
                   <Typography>Loading indicator</Typography>
                 </Grid>
               )}
-              <DialogActions>
-                <Button onClick={() => setOpenDetails(!openDetails)}>
-                  {" "}
-                  Close{" "}
-                </Button>
+                <DialogActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Box>
+
+                <Button onClick={() => {
+                        navigator.clipboard.writeText(indicator.indicatorRequestCode);
+                      }}>
+                <ContentCopyIcon /> Copy
+                  </Button>
+
+                  {/* <Tooltip title="Copy Visualisation Code">
+                    <IconButton
+                      color="primary"
+                      sx={{ padding: 0, margin: '0 4px' }}
+                      onClick={() => {
+                        console.log('Copy code');
+                      }}
+                    >
+                    
+                    </IconButton>
+                  </Tooltip> */}
+                </Box>
+              <Box>
+                  <Button onClick={() => setOpenDetails(!openDetails)}>
+                    Close
+                  </Button>
+                </Box> 
               </DialogActions>
+
             </Dialog>
             {/**@author Louis Born <louis.born@stud.uni-due.de> */}
            {/**Loading spinner> */}
