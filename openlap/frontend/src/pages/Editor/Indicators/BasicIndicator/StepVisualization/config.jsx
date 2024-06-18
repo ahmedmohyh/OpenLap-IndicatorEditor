@@ -6,7 +6,7 @@ const config = {
         mandatory: true,
         multiple_selections: false,
         helper: (<span>
-            Please choose the Visualization Library for rendering your data
+            Test
         </span>)
     },
     vis_type: {
@@ -14,7 +14,7 @@ const config = {
         mandatory: true,
         multiple_selections: false,
         helper: (<span>
-            Please choose the type of chart or graph to visualize your data
+            Test
         </span>)
     }
 }
