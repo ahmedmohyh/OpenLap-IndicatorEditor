@@ -22,7 +22,7 @@ const config = {
         mandatory: false,
         multiple_selections: false,
         helper: (<span>
-            Choose the timeframe
+            Choose the timeframe you want to analyse
         </span>)
     }
 };
