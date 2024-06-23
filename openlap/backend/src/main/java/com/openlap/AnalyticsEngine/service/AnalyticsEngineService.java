@@ -1110,7 +1110,6 @@ public class AnalyticsEngineService {
 
     // 【TODO】 old version
     public List<QuestionIndicatorResponse> getIndicatorsByUserName(HttpServletRequest request, String userName, boolean previewMode) {
-
         List<Question> questionsByUserName = getQuestionsByUserName(userName);
 //        "/AnalyticsModules/Triads"
         List<Triad> triads = new ArrayList<>();
@@ -1124,7 +1123,10 @@ public class AnalyticsEngineService {
             e.printStackTrace();
         }
 
-        System.out.println("!!! triads " + triads);
+        triads.forEach(t -> System.out.println(t.getCreatedBy()));
+        // triad has the meta data related to the indicator
+        // The indicator can have multiple triad (it is a configuration that is used to create the indicator)
+        triads = triads.stream().filter(triad -> triad.getCreatedBy().equals(userName)).collect(Collectors.toList());
 
 
         ArrayList<QuestionIndicatorResponse> questionSaveRequests = new ArrayList<QuestionIndicatorResponse>();
