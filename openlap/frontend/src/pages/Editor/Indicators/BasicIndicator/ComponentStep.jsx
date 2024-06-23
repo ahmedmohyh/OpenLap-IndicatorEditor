@@ -23,6 +23,7 @@ import StepVisualization from "./StepVisualization/StepVisualization";
 import { queryGeneratorWrapper, statementDurationWrapper } from "../../../../utils/ruleEngine/ruleGenerator";
 import ResponsiveComponent from '../../Common/Layout/PageComponent';
 import CheckIcon from '@mui/icons-material/Check';
+import { Text } from 'html-react-parser';
 
 /**
  * @todo Extract this component into a separate file for better organization.
@@ -170,8 +171,8 @@ export default function ComponentStep(props) {
     const _customStepIcon = (props) => {
         const { completed, icon } = props;
 
-        const ColoredStepIcon = styled('div')(({ theme, active, completed, error, color }) => ({
-            width: 24,
+        const ColoredStepIcon = styled('div')(({ theme, active, completed, error, color  }) => ({
+            width: 24, 
             height: 24,
             display: 'flex',
             alignItems: 'center',
@@ -214,7 +215,7 @@ export default function ComponentStep(props) {
                             ) : (
                                 <StepButton onClick={handleStep(index)}>
                                     <StepLabel StepIconComponent={_customStepIcon}>
-                                        <div style={{ fontSize: '18px' }}>{step.name}</div>
+                                        <div style={{ fontSize: '18px' , textDecoration : activeStep === index ? 'underline' : 'none'}}>{step.name}</div>
                                     </StepLabel>
                                 </StepButton>
                             )}
