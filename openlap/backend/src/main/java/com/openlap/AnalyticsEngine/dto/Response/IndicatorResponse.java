@@ -30,8 +30,6 @@ public class IndicatorResponse {
 	private Timestamp createdOn;
 	private String indicatorRequestCode;
 
-
-
 	public IndicatorResponse() {
 	}
 
@@ -41,14 +39,6 @@ public class IndicatorResponse {
 
 	public void setCreatedOn(Timestamp createdOn) {
 		this.createdOn = createdOn;
-	}
-
-	public String getIndicatorRequestCode() {
-		return indicatorRequestCode;
-	}
-
-	public void setIndicatorRequestCode(String indicatorRequestCode) {
-		this.indicatorRequestCode = indicatorRequestCode;
 	}
 
 	public String getId() {
