@@ -34,8 +34,8 @@ const Section = styled("div")(() => ({
 
 const ScrollableContainer = styled("div")(() => ({
   overflowY: "auto",
-  overflowX: "hidden", // Changed from "hidden" to "auto"
-  maxHeight: "100%",
+  overflowX: "hidden",
+  maxHeight: "238px",
 }));
 
 /**@author Louis Born <louis.born@stud.uni-due.de> */
@@ -48,9 +48,8 @@ export default function ComponentPreview({
   const dispatch = useDispatch();
   const showSnackbar = useSnackbar();
 
-  const completePreviewStep = useSelector(
-    (state) => state.indicatorEditorReducer.common.completePreviewStep
-  );
+
+  const completePreviewStep = useSelector((state) => state.indicatorEditorReducer.common.completePreviewStep);
 
   const displayCodeData = useSelector(
     (state) =>
@@ -106,7 +105,6 @@ export default function ComponentPreview({
     _indicatorPreviewData["indicatorType"] = "Basic Indicator";
 
     dispatch(indicatorSaved());
-    console.log("The indicator preview data is", _indicatorPreviewData);
     dispatch(saveIndicator(_indicatorPreviewData));
     dispatch(getUserQuestionsAndIndicators());
     dispatch(discardNewIndicatorRequest());
@@ -124,58 +122,6 @@ export default function ComponentPreview({
       setErrorInput(false);
     }
   };
-
-  console.log("The user selections are", selections);
-
-  const containerStyle = {
-    position: "relative", // Needed for absolute positioning of children
-    padding: "20px", // Adjust as needed, provides space inside the border
-    border: "1px solid #C9C9C9", // Creates the border around the container
-    marginTop: "20px",
-    borderRadius: "6px", // Optional: adds rounded corners
-  };
-
-  const keyContainerStyle = {
-    position: "absolute", // Position relative to its nearest positioned ancestor (containerStyle with position: 'relative')
-    top: "-10px", // Halfway outside the container; adjust as needed
-    left: "50%", // Center horizontally
-    transform: "translateX(-50%)", // Adjust for exact centering
-    backgroundColor: "white", // Match the background of your page or container
-    padding: "0 10px", // Adjust as needed
-  };
-
-  const tagContainerStyle = {
-    display: "flex",
-    overflowX: "scroll", // Enable horizontal scrolling
-    whiteSpace: "nowrap", // Prevent tags from wrapping to the next line
-    // Set a max-width or width as per your design requirements, for example:
-    maxWidth: "700px", // Adjust this value based on your layout needs
-  };
-
-  const groupSelectionsByKey = (selections) => {
-    const groupedSelections = {};
-
-    Object.entries(selections).forEach(([key, value]) => {
-      if (!groupedSelections[key]) {
-        groupedSelections[key] = {
-          color: value.color,
-          step: value.step,
-          stepIndex: value.stepIndex,
-          completed: value.completed,
-          tooltip: value.tooltip,
-          items: [],
-        };
-      }
-
-      value.selection.forEach((e) => {
-        groupedSelections[key].items.push(e);
-      });
-    });
-
-    return groupedSelections;
-  };
-
-  const groupedSelections = groupSelectionsByKey(selections);
 
   const _selections = ({ selections }) => {
     const noSelectionMade = Object.values(selections).every(
@@ -207,51 +153,39 @@ export default function ComponentPreview({
         ) : (
           <ScrollableContainer>
             <ul style={{ padding: 0, margin: 0 }}>
-              {Object.entries(groupedSelections).map(
-                ([key, group]) =>
-                  group.items.length > 0 && ( // Check if the items array is not empty
-                    <li key={key} style={{ marginBottom: "20px" }}>
-                      <div style={containerStyle}>
-                        <span style={keyContainerStyle}>{group.tooltip}</span>
-                        <div style={tagContainerStyle}>
-                          {group.items.map((e, index) => {
-                            if (
-                              e.hasOwnProperty("value") &&
-                              e.value === e.defaultValue
-                            ) {
-                              return null;
-                            } else {
-                              return (
-                                <Tag
-                                  key={`${key}-${index}`}
-                                  color={group.color}
-                                  step={group.stepIndex}
-                                  label={
-                                    e.outputPort
-                                      ? e.outputPort.name || e.outputPort.title
-                                      : e.vName
-                                      ? e.vName
-                                      : e.value || e.name
-                                      ? e.value || e.name
-                                      : "null"
-                                  }
-                                  completed={
-                                    group.completed &&
-                                    group.stepIndex !== activeStep
-                                  }
-                                  tooltip={
-                                    e.inputPort
-                                      ? e.inputPort.name || e.inputPort.title
-                                      : group.tooltip
-                                  }
-                                />
-                              );
-                            }
-                          })}
-                        </div>
-                      </div>
-                    </li>
-                  )
+              {Object.entries(selections).map(([key, value]) =>
+                value.selection.map((e, index) => {
+                  {
+                    /** Conditional rendering for optional parameters -> Problem: Redux State not updated see file Choices.js for example. */
+                  }
+                  if (e.hasOwnProperty("value") && e.value === e.defaultValue) {
+                  } else {
+                    return (
+                      <Tag
+                        key={`${value.key}-${index}`}
+                        color={value.color}
+                        step={value.stepIndex}
+                        label={
+                          e.outputPort
+                            ? e.outputPort.name || e.outputPort.title
+                            : e.vName
+                            ? e.vName
+                            : e.value || e.name
+                            ? e.value || e.name
+                            : "null"
+                        }
+                        completed={
+                          value.completed && value.stepIndex !== activeStep
+                        }
+                        tooltip={
+                          e.inputPort
+                            ? e.inputPort.name || e.inputPort.title
+                            : value.tooltip
+                        }
+                      />
+                    );
+                  }
+                })
               )}
             </ul>
           </ScrollableContainer>
@@ -286,44 +220,30 @@ export default function ComponentPreview({
               Error: Unable to generate visualization preview due to an error.
             </Alert>
           ) : (
+
+
             <>
-              {!displayCodeData && !completePreviewStep ? (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    color: "#5F6368",
-                    fontSize: "14px",
-                    minHeight: "156px",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: "16px",
-                      color: "#5F6368",
-                      fontSize: "14px",
-                      minHeight: "156px",
-                    }}
-                  >
+             {!displayCodeData && !completePreviewStep ? (
+            <div  style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: '#5F6368', fontSize: '14px', minHeight: '156px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '16px', color: '#5F6368', fontSize: '14px', minHeight: '156px' }}>
                     <img width="96px" height="96px" src={imgNoPreview} />
                     Preview is available only when all steps are completed.
                   </div>
                 </div>
-              ) : (
+             ): (
+                
                 <ConditionalSelectionRender
                   isRendered={true}
                   isLoading={!displayCodeData && completePreviewStep}
                   hasError={errorMessage}
-                  handleRefresh={() => {}}
+                  handleRefresh={() => { } }
                 ></ConditionalSelectionRender>
-              )}
-            </>
-          )}
+             )}
+                </>
+
+
+          )
+          }
         </Grid>
       </Section>
     );
@@ -369,7 +289,7 @@ export default function ComponentPreview({
           />
         </Section>
         <_selections selections={selections} />
-        {/*   <_preview /> */}
+        <_preview />
       </div>
     </ResponsiveComponent>
   );
