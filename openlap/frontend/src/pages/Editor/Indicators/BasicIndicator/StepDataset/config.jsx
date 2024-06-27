@@ -8,8 +8,7 @@ const config = {
         mandatory: true,
         multiple_selections: true,
         helper: (<span>
-            Choose the dataset from the desired <strong>Online Learning Platform</strong>. Online Learning Platforms are 
-        used by students for accessing course contents, forum discussions, sending assessments and more
+            Choose the dataset from the desired <strong>Online Learning Platform.</strong> Online Learning Platforms are used by students for accessing course contents, forum discusions, sending assessments and more
         </span>)
     },
     activity_types: {

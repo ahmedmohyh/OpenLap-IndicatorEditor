@@ -32,7 +32,7 @@ export default function VizMappingChoices(props) {
         name={vizDataInput.title}
         isMandatory={vizDataInput.required}
         allowsMultipleSelections={false}
-        helper={'test'}
+        helper={'Test.'}
       >
         <MenuSingleSelect
           name={vizDataInput.title}

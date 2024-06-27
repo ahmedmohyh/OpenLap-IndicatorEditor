@@ -28,7 +28,9 @@ export default function SelectContainer(props) {
                 </Grid>}
                 <Grid item container xs={12} spacing={3} direction="row" alignItems="center">
                     <Grid item xs={(helper ? 10 : 12)}>
-                        {children}
+                        <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+                            {children}
+                        </div>
                     </Grid>
                     {helper && <Grid item xs={2}>
                         <HelpTooltip message={helper}></HelpTooltip>
