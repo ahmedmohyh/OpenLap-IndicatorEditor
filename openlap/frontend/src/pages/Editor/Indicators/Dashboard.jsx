@@ -488,33 +488,37 @@ export default function Dashboard() {
                     <div
                       style={{
                         display: "flex",
-                        alignItems: "center",
+                        flexDirection: "column",
                         gap: "16px",
                         marginBottom: "16px",
                       }}
                     >
-                      <TextField
-                        type="search"
-                        fullWidth
-                        sx={{ flex: 1, backgroundColor: "#f1f3f4" }}
-                        placeholder="Search"
-                        onChange={searchByIndicatorName}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <SearchIcon />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                      <Button
-                        variant="outlined"
-                        startIcon={<SettingsInputComponentIcon />}
-                        onClick={() => setSettingsOpen(!settingsOpen)}
-                        sx={{ flex: "none" }} // Prevent button from growing
-                      >
-                        Settings
-                      </Button>
+                      <div>
+                        <TextField
+                          type="search"
+                          fullWidth
+                          sx={{ backgroundColor: "#f1f3f4" }}
+                          placeholder="Search"
+                          onChange={searchByIndicatorName}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <SearchIcon />
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </div>
+                      <Box fullWidth>
+                        <Button
+                          fullWidth // This makes the button take the full width of its parent container
+                          variant="outlined"
+                          startIcon={<SettingsInputComponentIcon />}
+                          onClick={() => setSettingsOpen(!settingsOpen)}
+                        >
+                          Settings
+                        </Button>
+                      </Box>
                     </div>
                     <Collapse in={settingsOpen} timeout="auto" unmountOnExit>
                       <Box
@@ -528,14 +532,15 @@ export default function Dashboard() {
                         }}
                       >
                         <Box sx={{ flex: 1 }}>
-                          <div>
+                          {/*  <div>
                             <strong>Type</strong>
-                          </div>
+                          </div> */}
                           <SelectContainer
                             name={"Type filter"}
                             isMandatory={false}
                             allowsMultipleSelections={false}
                             hideDesc={true}
+                            sx={{ width: "100%" }} // Ensure SelectContainer takes the full width of its flex container
                           >
                             <MenuSingleSelect
                               name={"Type"}
@@ -546,14 +551,18 @@ export default function Dashboard() {
                           </SelectContainer>
                         </Box>
                         <Box sx={{ flex: 1 }}>
-                          <div>
+                          {/*                           <div>
                             <strong>Creation date</strong>
-                          </div>
+                          </div> */}
                           <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
+                              sx={{ width: "100%" }}
                               label="Pick a date"
                               value={selectedDate}
                               onChange={handleDateChange}
+                              renderInput={(params) => (
+                                <TextField {...params} fullWidth />
+                              )}
                             />
                           </LocalizationProvider>
                         </Box>
@@ -601,9 +610,10 @@ export default function Dashboard() {
                             </TableCell>
                             <TableCell align="center">Preview</TableCell>
                             <TableCell align="center">Share</TableCell>
-                            {/* <TableCell align="center">Delete</TableCell> */}
+                            <TableCell align="center"></TableCell>
                           </TableRow>
                         </TableHead>
+
                         <TableBody>
                           {sortedResults.map((indicator) => (
                             <TableRow

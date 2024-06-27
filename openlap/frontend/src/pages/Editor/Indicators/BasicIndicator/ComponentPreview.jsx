@@ -129,8 +129,9 @@ export default function ComponentPreview({
   const containerStyle = {
     position: "relative", // Needed for absolute positioning of children
     padding: "20px", // Adjust as needed, provides space inside the border
-    border: "1px solid black", // Creates the border around the container
-    marginTop: "20px", // Space for the 'key' to sit above the container
+    border: "1px solid #C9C9C9", // Creates the border around the container
+    marginTop: "20px",
+    borderRadius: "6px", // Optional: adds rounded corners
   };
 
   const keyContainerStyle = {
