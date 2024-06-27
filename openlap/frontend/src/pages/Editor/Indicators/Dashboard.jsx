@@ -133,7 +133,7 @@ export default function Dashboard() {
       dispatch(resetIndicatorSession());
       dispatch(getUserQuestionsAndIndicators());
       scrollToTop();
-    }, 2000); // 10000 milliseconds = 10 seconds
+    }, 1000); // 10000 milliseconds = 10 seconds
   };
 
   const [selectedDate, setSelectedDate] = React.useState(null);
@@ -401,7 +401,7 @@ export default function Dashboard() {
       //console.log(userDefinedIndicators[0].indicators.createdBy);
 
       console.log(userDefinedIndicators[0].indicators);
-    }
+    } else setdashboardLoading(false);
   }, [userDefinedIndicators]);
 
   useEffect(() => {
