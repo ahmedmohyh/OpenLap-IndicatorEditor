@@ -59,6 +59,9 @@ import SettingsIcon from "@mui/icons-material/Link";
 import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { useSnackbar } from 'notistack';
+
+
 
 const indicatorTypes = [
   "Basic Indicator",
@@ -86,6 +89,7 @@ const Section = styled("div")(() => ({
 export default function Dashboard() {
   // console.log(indicatorTypes);
 
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -682,6 +686,14 @@ export default function Dashboard() {
                                         navigator.clipboard.writeText(
                                           indicator.indicatorRequestCode
                                         );
+                                        enqueueSnackbar('Indicator copied to clipboard', {
+                                          variant: 'default', // Use 'default' or omit for no specific variant
+                                          style: { backgroundColor: '#323232', color: 'white' }, 
+                                          anchorOrigin: {
+                                            vertical: 'bottom',
+                                            horizontal: 'center',
+                                          },// Custom style for black background and white text
+                                        });
                                       }}
                                     >
                                       <LinkIcon />
