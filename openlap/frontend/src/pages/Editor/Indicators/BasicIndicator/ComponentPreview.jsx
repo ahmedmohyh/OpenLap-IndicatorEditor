@@ -35,7 +35,7 @@ const Section = styled("div")(() => ({
 const ScrollableContainer = styled("div")(() => ({
   overflowY: "auto",
   overflowX: "hidden", // Changed from "hidden" to "auto"
-  maxHeight: "238px",
+  maxHeight: "100%",
 }));
 
 /**@author Louis Born <louis.born@stud.uni-due.de> */
@@ -106,6 +106,7 @@ export default function ComponentPreview({
     _indicatorPreviewData["indicatorType"] = "Basic Indicator";
 
     dispatch(indicatorSaved());
+    console.log("The indicator preview data is", _indicatorPreviewData);
     dispatch(saveIndicator(_indicatorPreviewData));
     dispatch(getUserQuestionsAndIndicators());
     dispatch(discardNewIndicatorRequest());
@@ -368,7 +369,7 @@ export default function ComponentPreview({
           />
         </Section>
         <_selections selections={selections} />
-        <_preview />
+        {/*   <_preview /> */}
       </div>
     </ResponsiveComponent>
   );

@@ -190,7 +190,7 @@ export default function BasicIndicator(props) {
             actions={[closeActionObject]}
             children={
               [
-                <ComponentStep key={'Basic_Component_Step'}  />,
+                <ComponentStep key={'Basic_Component_Step'}  classes={classes}  />,
                 <ComponentPreview
                   key={'Basic_Component_Preview'}
                   classes={classes}
