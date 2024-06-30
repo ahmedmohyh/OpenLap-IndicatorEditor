@@ -275,7 +275,15 @@ export default function ComponentStep(props, { classes }) {
                     }}
                   >
                     <img width="96px" height="96px" src={imgNoPreview} />
-                    Preview is available only when all steps are completed.
+                    <div>
+                      {" "}
+                      {/* Ensure this div does not enforce new lines */}
+                      Click on{" "}
+                      <span style={{ fontWeight: "bold" }}>
+                        Generate preview
+                      </span>{" "}
+                      to see the end results
+                    </div>
                   </div>
                 </div>
               ) : (
