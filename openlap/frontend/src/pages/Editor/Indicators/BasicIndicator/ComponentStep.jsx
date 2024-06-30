@@ -214,7 +214,7 @@ export default function ComponentStep(props) {
                                 </Tooltip>
                             ) : (
                                 <StepButton onClick={handleStep(index)}>
-                                    <StepLabel StepIconComponent={_customStepIcon}>
+                                    <StepLabel StepIconComponent={_customStepIcon} sx={{'&:hover': { textDecoration: activeStep !== index ? 'underline' : 'none' }}}>
                                         <div style={{ fontSize: '18px' , textDecoration : activeStep === index ? 'underline' : 'none'}}>{step.name}</div>
                                     </StepLabel>
                                 </StepButton>
