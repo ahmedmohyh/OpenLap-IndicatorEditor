@@ -29,6 +29,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
 
 /**
  * @todo Extract this component into a separate file for better organization.
@@ -273,8 +274,8 @@ export default function ComponentStep(props) {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <button onClick={handleCloseDialog} >Cancle</button>
-                <button onClick={handleStepBackward}>Continue</button>
+                <Button onClick={handleCloseDialog} >Cancle</Button>
+                <Button onClick={handleStepBackward}>Continue</Button>
             </DialogActions>
         </Dialog>
         <ResponsiveComponent
