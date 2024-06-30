@@ -24,6 +24,11 @@ import { queryGeneratorWrapper, statementDurationWrapper } from "../../../../uti
 import ResponsiveComponent from '../../Common/Layout/PageComponent';
 import CheckIcon from '@mui/icons-material/Check';
 import { Text } from 'html-react-parser';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 /**
  * @todo Extract this component into a separate file for better organization.
@@ -104,6 +109,7 @@ export default function ComponentStep(props) {
     }
 
     const handleStepBackward = () => {
+        handleCloseDialog(true);
         const remainingCompleted = completedStep;
         delete remainingCompleted[activeStep - 1];
         dispatch(setCompletedIndicatorStep(remainingCompleted));
@@ -226,6 +232,13 @@ export default function ComponentStep(props) {
         </Box>
     );
 
+    const [openDialog, setOpenDialog] = useState(false);
+    const handleClickOpenDialog = () => {
+        setOpenDialog(true);
+    };
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
 
     const _buttonForward = {
         variant: "contained",
@@ -238,12 +251,32 @@ export default function ComponentStep(props) {
     const _buttonBackward = {
         variant: "outlined",
         label: "Back",
-        onClick: handleStepBackward,
+        onClick: handleClickOpenDialog,
         disabled: false,
         hidden: (activeStep === 0)
     };
 
+
+
     return (
+        <>
+        <Dialog 
+            open={openDialog}
+            onClose= {handleCloseDialog}
+        >
+            <DialogTitle>
+                Warning
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                Going back to the previous step will alter your current selections.
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <button onClick={handleCloseDialog} >Cancle</button>
+                <button onClick={handleStepBackward}>Continue</button>
+            </DialogActions>
+        </Dialog>
         <ResponsiveComponent
             gridSpace={6}
             title={_customStep}
@@ -256,5 +289,6 @@ export default function ComponentStep(props) {
                 ) : (_customStepLast)}
             </div>
         </ResponsiveComponent>
+        </>
     )
 }
