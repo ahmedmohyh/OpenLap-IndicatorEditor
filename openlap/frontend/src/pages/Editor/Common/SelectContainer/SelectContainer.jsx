@@ -28,7 +28,7 @@ export default function SelectContainer(props) {
                 </Grid>}
                 <Grid item container xs={12} spacing={3} direction="row" alignItems="center">
                     <Grid item xs={(helper ? 10 : 12)}>
-                        <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+                        <div style={{ maxHeight: "300px"}}>
                             {children}
                         </div>
                     </Grid>
