@@ -40,6 +40,12 @@ export default function ComponentStep(props, { classes }) {
   const dispatch = useDispatch();
   const [completed, setCompleted] = useState([]);
   const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
+
+//here I can build the dependencey graph and send it to the individual steps.
+// add the insert and deletion function here as well and find a way to call them on select change call the insert 
+// and on deselect call the delete function
+
+
   const activeStep = useSelector(
     (state) => state.indicatorEditorReducer.common.activeStep
   );
