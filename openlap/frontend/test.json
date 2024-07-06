@@ -1,0 +1,342 @@
+{
+    "selectedPlatform": {
+        "key": "selectedPlatform",
+        "selection": [
+            {
+                "id": "4e1e85b9-cf7e-4ca5-b2de-80c9f48db8d0",
+                "type": "statement.context.platform",
+                "name": "CourseMapper"
+            }
+        ],
+        "color": "#9c27b0",
+        "step": "Dataset",
+        "stepIndex": 0,
+        "completed": true,
+        "tooltip": "Dataset"
+    },
+    "selectedActivityTypes": {
+        "key": "selectedActivityTypes",
+        "selection": [
+            {
+                "id": "3c1ad6d9-12e1-4434-a2fc-4d83021d9e81",
+                "type": "http://www.CourseMapper.de/activityType/annotation",
+                "name": "Annotation"
+            },
+            {
+                "id": "ef5e1afa-2a06-4371-8ab2-3a18439bcb00",
+                "type": "http://id.tincanapi.com/activitytype/lms",
+                "name": "Lms"
+            },
+            {
+                "id": "6074de5b-03b9-4a03-ba0c-3145f8028af0",
+                "type": "http://www.CourseMapper.de/activityType/material",
+                "name": "Material"
+            }
+        ],
+        "color": "#9c27b0",
+        "step": "Dataset",
+        "stepIndex": 0,
+        "completed": true,
+        "tooltip": "Activity type"
+    },
+    "selectedActionOnActivities": {
+        "key": "selectedActionOnActivities",
+        "selection": [
+            {
+                "id": "3d7b0f54-c316-49bd-9615-8c8db5660c60",
+                "type": "http://curatr3.com/define/verb/edited",
+                "name": "edited"
+            },
+            {
+                "id": "064fe8d5-5ebc-4786-8c4b-5ef7cf7c5748",
+                "type": "http://activitystrea.ms/schema/1.0/dislike",
+                "name": "dislike"
+            },
+            {
+                "id": "6d0a365c-a135-465d-acb0-e3f9453d5bab",
+                "type": "http://risc-inc.com/annotator/verbs/annotated",
+                "name": "annotated"
+            }
+        ],
+        "color": "#9c27b0",
+        "step": "Dataset",
+        "stepIndex": 0,
+        "completed": true,
+        "tooltip": "Action"
+    },
+    "selectedActivityName": {
+        "key": "selectedActivityName",
+        "selection": [
+            {
+                "id": "bcd87648-38a0-4f14-8c43-2a03e0cadf7d",
+                "type": "statement.object.definition.name.en-US",
+                "name": "2 - Ahmad"
+            },
+            {
+                "id": "2faf51e9-b2ac-4213-b90d-730822c51174",
+                "type": "statement.object.definition.name.en-US",
+                "name": "Angular Part 1 - Final"
+            },
+            {
+                "id": "2ffdf1b4-2879-42ab-a386-31a103bd4a03",
+                "type": "statement.object.definition.name.en-US",
+                "name": "Angular Part 1 Hands-on installation guide"
+            }
+        ],
+        "color": "#03a9f4",
+        "step": "Filter",
+        "stepIndex": 1,
+        "completed": true,
+        "tooltip": "Activities"
+    },
+    "selectedTimeDuration": {
+        "key": "selectedTimeDuration",
+        "selection": [
+            {
+                "name": "01/01/2019 - 04/07/2024"
+            }
+        ],
+        "color": "#03a9f4",
+        "step": "Filter",
+        "stepIndex": 1,
+        "completed": true,
+        "tooltip": "Time Start/End Date"
+    },
+    "selectedUsers": {
+        "key": "selectedUsers",
+        "selection": [
+            {
+                "id": "0345dcbf-723f-4290-9af8-90558f29be71",
+                "operatorId": "",
+                "name": "All users"
+            }
+        ],
+        "color": "#03a9f4",
+        "step": "Filter",
+        "stepIndex": 1,
+        "completed": true,
+        "tooltip": "Users"
+    },
+    "selectedAnalysisMethod": {
+        "key": "selectedAnalysisMethod",
+        "selection": [
+            {
+                "type": "normal",
+                "description": "Count the occurrences of items for each unique value in the specified column. E.g. if the 'group by column' contains unique values G1,G2 and items list contains I1,I2,I3 than it will calculate how many time I1 occurred with G1 and G2. Similarly for I2 and so on.",
+                "name": "Count items based on specified column",
+                "outputs": "item_count",
+                "creator": "Arham Muslim",
+                "filename": "./analyticsMethodsJars/AnalyticsMethods-Prototypes-1.0-SNAPSHOT.jar",
+                "implementing_class": "com.openlap.AnalyticsMethods.Prototypes.Counter.ColumnBased",
+                "id": "e6795ab3-9208-47bb-82f9-b71c86e8cc7c"
+            }
+        ],
+        "color": "#8bc34a",
+        "step": "Analysis",
+        "stepIndex": 2,
+        "completed": true,
+        "tooltip": "Analysis Method"
+    },
+    "selectedMappingAnalysisInputAttributesData": {
+        "key": "selectedMappingAnalysisInputAttributesData",
+        "selection": [
+            {
+                "inputPort": {
+                    "type": "Text",
+                    "id": "group_column",
+                    "required": true,
+                    "title": "Group by column",
+                    "description": "List of of items which will be used to group the items to count."
+                },
+                "outputPort": {
+                    "id": "statement.verb.display.en-US",
+                    "type": "Text",
+                    "required": true,
+                    "name": "Actions",
+                    "displayName": "Action",
+                    "description": "Selected list of actions performed on the activity(ies). E.g. a list of actions performed on a course are e.g. \"viewed\", \"enrolled\" etc."
+                }
+            },
+            {
+                "inputPort": {
+                    "type": "Text",
+                    "id": "item_name",
+                    "required": true,
+                    "title": "Items to count",
+                    "description": "List of items to count"
+                },
+                "outputPort": {
+                    "id": "statement.object.definition.name.en-US",
+                    "type": "Text",
+                    "required": true,
+                    "name": "Activities",
+                    "displayName": "Activities",
+                    "description": "Selected list of all the Activities specified in Activity Filter. E.g. courses that are selected in Activity name section are \"Learning Analytics\", \"Data Mining\" etc."
+                }
+            }
+        ],
+        "color": "#8bc34a",
+        "step": "Analysis",
+        "stepIndex": 2,
+        "completed": true,
+        "tooltip": "Analysis Method"
+    },
+    "selectedAnalyticsMethodParams": {
+        "key": "selectedAnalyticsMethodParams",
+        "selection": [
+            {
+                "type": "Choice",
+                "dataType": "STRING",
+                "id": "search_type",
+                "title": "Counting type",
+                "description": "Count all item occurrences per user or only single item per user. For [Unique items] count type, the [User] column is required",
+                "possibleValues": [
+                    "All items",
+                    "Unique items"
+                ],
+                "defaultValue": "All items",
+                "value": "All items",
+                "required": true
+            }
+        ],
+        "color": "#8bc34a",
+        "step": "Analysis",
+        "stepIndex": 2,
+        "completed": true,
+        "tooltip": "Analysis Method"
+    },
+    "selectedVisualizationMethod": {
+        "key": "selectedVisualizationMethod",
+        "selection": [
+            {
+                "id": "240e8a85-dfc7-4825-8940-715ea848a9fb",
+                "name": "C3.js",
+                "creator": "Arham Muslim",
+                "description": "C3.js is a D3-based reusable chart library",
+                "frameworkLocation": "./visualizerJars/Visualizer-C3-1.0-SNAPSHOT.jar",
+                "values": [
+                    {
+                        "id": "39653479-13e0-4aed-951e-dc37aaf15e67",
+                        "implementingClass": "openlap.visualizer.C3.Charts.Area",
+                        "name": "Area Chart"
+                    },
+                    {
+                        "id": "29f65860-9408-4885-92e9-097b8ef557a3",
+                        "implementingClass": "openlap.visualizer.C3.Charts.Bar",
+                        "name": "Bar Chart"
+                    },
+                    {
+                        "id": "55d86955-db0e-4870-87bc-3b8b8f67e3b9",
+                        "implementingClass": "openlap.visualizer.C3.Charts.Donut",
+                        "name": "Donut Chart"
+                    },
+                    {
+                        "id": "eae38ef7-663c-48c4-b3f7-1c65c337e222",
+                        "implementingClass": "openlap.visualizer.C3.Charts.GroupedArea",
+                        "name": "Grouped Area Chart"
+                    },
+                    {
+                        "id": "ca13c75b-3ab4-4525-9571-0be5092e01b3",
+                        "implementingClass": "openlap.visualizer.C3.Charts.GroupedBar",
+                        "name": "Grouped Bar Chart"
+                    },
+                    {
+                        "id": "308a2eea-98d7-48ef-8712-c958f9edcb7d",
+                        "implementingClass": "openlap.visualizer.C3.Charts.Line",
+                        "name": "Line Chart"
+                    },
+                    {
+                        "id": "d6d7553d-3250-4391-8b75-38034081dcaa",
+                        "implementingClass": "openlap.visualizer.C3.Charts.MultiLine",
+                        "name": "Multi Line Chart"
+                    },
+                    {
+                        "id": "84d26db6-8c4b-4e82-844a-17686f86a6c5",
+                        "implementingClass": "openlap.visualizer.C3.Charts.Pie",
+                        "name": "Pie Chart"
+                    },
+                    {
+                        "id": "c8a4763b-41ca-4845-ab3b-9ec1b6211289",
+                        "implementingClass": "openlap.visualizer.C3.Charts.ScatterPlot",
+                        "name": "Scatter Plot Chart"
+                    },
+                    {
+                        "id": "4bd834cd-f357-48b4-9c32-25eb0b6a3aaa",
+                        "implementingClass": "openlap.visualizer.C3.Charts.StackedArea",
+                        "name": "Stacked Area Chart"
+                    },
+                    {
+                        "id": "b2b75684-804b-4873-becb-3c5ebac3e4de",
+                        "implementingClass": "openlap.visualizer.C3.Charts.StackedBar",
+                        "name": "Stacked Bar Chart"
+                    }
+                ]
+            }
+        ],
+        "color": "#ff9800",
+        "step": "Visualization",
+        "stepIndex": 3,
+        "completed": false,
+        "tooltip": "Visualization Library"
+    },
+    "selectedVisualizationMethodsAndTypes": {
+        "key": "selectedVisualizationMethodsAndTypes",
+        "selection": [
+            {
+                "id": "240e8a85-dfc7-4825-8940-715ea848a9fb",
+                "name": "C3.js",
+                "creator": "Arham Muslim",
+                "description": "C3.js is a D3-based reusable chart library",
+                "vId": "29f65860-9408-4885-92e9-097b8ef557a3",
+                "vName": "Bar Chart"
+            }
+        ],
+        "color": "#ff9800",
+        "step": "Visualization",
+        "stepIndex": 3,
+        "completed": false,
+        "tooltip": "Visualization Type"
+    },
+    "selectedVisualizationMapping": {
+        "key": "selectedVisualizationMapping",
+        "selection": [
+            {
+                "inputPort": {
+                    "type": "Numeric",
+                    "id": "yAxisValues",
+                    "required": true,
+                    "title": "Y-Axis",
+                    "description": "List of items to be displayed on Y-Axis of the graph"
+                },
+                "outputPort": {
+                    "type": "Numeric",
+                    "id": "item_count",
+                    "required": true,
+                    "title": "Item Count",
+                    "description": "Number of time each item occurred in the list for each item in the group by column"
+                }
+            },
+            {
+                "inputPort": {
+                    "type": "Text",
+                    "id": "xAxisStrings",
+                    "required": true,
+                    "title": "X-Axis",
+                    "description": "List of items to be displayed on X-Axis of the graph"
+                },
+                "outputPort": {
+                    "type": "Text",
+                    "id": "item_name",
+                    "required": true,
+                    "title": "Item Names",
+                    "description": "List of items in the list"
+                }
+            }
+        ],
+        "color": "#ff9800",
+        "step": "Visualization",
+        "stepIndex": 3,
+        "completed": false,
+        "tooltip": "Visualization Input"
+    }
+}

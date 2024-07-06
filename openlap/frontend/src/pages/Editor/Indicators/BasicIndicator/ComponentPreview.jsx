@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Alert, Grid, TextField, styled } from "@mui/material";
+import { Grid, TextField, styled } from "@mui/material";
 import {
   indicatorSaved,
   resetIndicatorSession,
@@ -12,12 +12,90 @@ import {
 import { saveIndicator } from "../../../../utils/redux/reducers/compositeEditor";
 import ResponsiveComponent from "../../Common/Layout/PageComponent";
 import Tag from "../../Common/Tag/Tag";
-import Preview from "./Preview/Preview";
 import { useSnackbar } from "./context/SnackbarContext";
 import SnackbarType from "./enum/SnackbarType";
 import nameValidator from "../../Helper/nameValidator";
 import imgNoPreview from "../../../../assets/img/vis-empty-state/no-indicator-preview.svg";
-import ConditionalSelectionRender from "../../Common/ConditionalSelectionRender/ConditionalSelectionRender";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+// DAG class definition
+class DAG {
+  constructor() {
+    this.nodes = new Map();
+  }
+
+  addNode(node) {
+    if (!this.nodes.has(node)) {
+      this.nodes.set(node, []);
+    }
+  }
+
+  addEdge(fromNode, toNode) {
+    if (!this.nodes.has(fromNode) || !this.nodes.has(toNode)) {
+      throw new Error("Both nodes need to be in the graph");
+    }
+    this.nodes.get(fromNode).push(toNode);
+  }
+
+  printGraph() {
+    for (let [key, value] of this.nodes) {
+      console.log(`${key} -> ${value.join(", ")}`);
+    }
+  }
+
+  canDeleteNode(node) {
+    // Check if the node has any children
+    return this.nodes.has(node) && this.nodes.get(node).length === 0;
+  }
+
+}
+
+function buildDAGFromSelections(selections) {
+  const dag = new DAG();
+
+  const rootKey = "selectedPlatform";
+  const rootSelection = selections[rootKey].selection;
+
+  if (rootSelection && rootSelection.length > 0) {
+    const rootName = rootSelection[0].name;
+    dag.addNode(rootName);
+
+    // Function to add dependencies
+    function addDependencies(parentNode, selectionKey) {
+      const selection = selections[selectionKey];
+      if (selection && selection.selection && selection.selection.length > 0) {
+        const nodeNames = selection.selection.map((item) => item.name);
+
+        nodeNames.forEach((nodeName) => {
+          dag.addNode(nodeName);
+          dag.addEdge(parentNode, nodeName);
+
+          if (selectionKey === "selectedActivityTypes") {
+            addDependencies(nodeName, "selectedActionOnActivities");
+          }
+          if (selectionKey === "selectedAnalysisMethod") {
+            addDependencies(nodeName, "selectedMappingAnalysisInputAttributesData");
+          }
+          if (selectionKey === "selectedVisualizationMethod") {
+            addDependencies(nodeName, "selectedVisualizationMethodsAndTypes");
+            addDependencies(nodeName, "selectedVisualizationMapping");
+          }
+        });
+      }
+    }
+
+    // Adding root-level dependencies
+    addDependencies(rootName, "selectedActivityTypes");
+    addDependencies(rootName, "selectedTimeDuration");
+    addDependencies(rootName, "selectedUsers");
+    addDependencies(rootName, "selectedAnalysisMethod");
+    addDependencies(rootName, "selectedVisualizationMethod");
+  }
+
+  return dag;
+}
+
 
 const Section = styled("div")(() => ({
   display: "flex",
@@ -38,7 +116,6 @@ const ScrollableContainer = styled("div")(() => ({
   maxHeight: "100%",
 }));
 
-/**@author Louis Born <louis.born@stud.uni-due.de> */
 export default function ComponentPreview({
   classes,
   selections,
@@ -48,10 +125,6 @@ export default function ComponentPreview({
   const dispatch = useDispatch();
   const showSnackbar = useSnackbar();
 
-  const completePreviewStep = useSelector(
-    (state) => state.indicatorEditorReducer.common.completePreviewStep
-  );
-
   const displayCodeData = useSelector(
     (state) =>
       state.indicatorEditorReducer.fetchedData.visualizationCode?.displayCode
@@ -59,23 +132,8 @@ export default function ComponentPreview({
   const indicatorName = useSelector(
     (state) => state.indicatorEditorReducer.selectedData.indicatorName?.name
   );
-  const indicatorType = useSelector(
-    (state) => state.gqiEditorReducer.common?.indicatorType
-  );
-  const indicatorNameAvailable = useSelector(
-    (state) =>
-      state.indicatorEditorReducer.selectedData.indicatorName?.available
-  );
-  const scriptCodeData = useSelector(
-    (state) =>
-      state.indicatorEditorReducer.fetchedData.visualizationCode?.scriptCode
-  );
   const indicatorPreviewData = useSelector(
     (state) => state.indicatorEditorReducer.selectedData?.indicatorPreview
-  );
-  const errorMessage = useSelector(
-    (state) =>
-      state.indicatorEditorReducer.fetchedData.visualizationCode?.errorMessage
   );
 
   const [errorInput, setErrorInput] = useState(false);
@@ -125,31 +183,28 @@ export default function ComponentPreview({
     }
   };
 
-  console.log("The user selections are", selections);
-
   const containerStyle = {
-    position: "relative", // Needed for absolute positioning of children
-    padding: "20px", // Adjust as needed, provides space inside the border
-    border: "1px solid #C9C9C9", // Creates the border around the container
+    position: "relative",
+    padding: "20px",
+    border: "1px solid #C9C9C9",
     marginTop: "20px",
-    borderRadius: "6px", // Optional: adds rounded corners
+    borderRadius: "6px",
   };
 
   const keyContainerStyle = {
-    position: "absolute", // Position relative to its nearest positioned ancestor (containerStyle with position: 'relative')
-    top: "-10px", // Halfway outside the container; adjust as needed
-    left: "50%", // Center horizontally
-    transform: "translateX(-50%)", // Adjust for exact centering
-    backgroundColor: "white", // Match the background of your page or container
-    padding: "0 10px", // Adjust as needed
+    position: "absolute",
+    top: "-10px",
+    left: "50%",
+    transform: "translateX(-50%)",
+    backgroundColor: "white",
+    padding: "0 10px",
   };
 
   const tagContainerStyle = {
     display: "flex",
-    overflowX: "scroll", // Enable horizontal scrolling
-    whiteSpace: "nowrap", // Prevent tags from wrapping to the next line
-    // Set a max-width or width as per your design requirements, for example:
-    maxWidth: "700px", // Adjust this value based on your layout needs
+    overflowX: "scroll",
+    whiteSpace: "nowrap",
+    maxWidth: "700px",
   };
 
   const groupSelectionsByKey = (selections) => {
@@ -176,6 +231,29 @@ export default function ComponentPreview({
   };
 
   const groupedSelections = groupSelectionsByKey(selections);
+
+  const handleDelete = (nodeName) => {
+
+    console.log("the node to be deleted is", nodeName);
+
+    const dag = buildDAGFromSelections(selections);
+  
+    if (dag.canDeleteNode(nodeName)) {
+      // Perform deletion logic here (not implemented in this example)
+      showSnackbar(
+        `Element "${nodeName}" has been deleted.`,
+        SnackbarType.success
+      );
+      // Example of state update or dispatch action:
+      // dispatch(deleteNodeAction(nodeName));
+    } else {
+      showSnackbar(
+        `Error: Element "${nodeName}" is dependent on another node and cannot be deleted.`,
+        SnackbarType.error
+      );
+    }
+  };
+  
 
   const _selections = ({ selections }) => {
     const noSelectionMade = Object.values(selections).every(
@@ -209,7 +287,7 @@ export default function ComponentPreview({
             <ul style={{ padding: 0, margin: 0 }}>
               {Object.entries(groupedSelections).map(
                 ([key, group]) =>
-                  group.items.length > 0 && ( // Check if the items array is not empty
+                  group.items.length > 0 && (
                     <li key={key} style={{ marginBottom: "20px" }}>
                       <div style={containerStyle}>
                         <span style={keyContainerStyle}>{group.tooltip}</span>
@@ -222,29 +300,46 @@ export default function ComponentPreview({
                               return null;
                             } else {
                               return (
-                                <Tag
-                                  key={`${key}-${index}`}
-                                  color={group.color}
-                                  step={group.stepIndex}
-                                  label={
-                                    e.outputPort
-                                      ? e.outputPort.name || e.outputPort.title
-                                      : e.vName
-                                      ? e.vName
-                                      : e.value || e.name
-                                      ? e.value || e.name
-                                      : "null"
-                                  }
-                                  completed={
-                                    group.completed &&
-                                    group.stepIndex !== activeStep
-                                  }
-                                  tooltip={
-                                    e.inputPort
-                                      ? e.inputPort.name || e.inputPort.title
-                                      : group.tooltip
-                                  }
-                                />
+                                <div
+                                  key={index}
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "8px",
+                                  }}
+                                >
+                                  <Tag
+                                    key={`${key}-${index}`}
+                                    color={group.color}
+                                    step={group.stepIndex}
+                                    label={
+                                      e.outputPort
+                                        ? e.outputPort.name ||
+                                          e.outputPort.title
+                                        : e.vName
+                                        ? e.vName
+                                        : e.value || e.name
+                                        ? e.value || e.name
+                                        : "null"
+                                    }
+                                    completed={
+                                      group.completed &&
+                                      group.stepIndex !== activeStep
+                                    }
+                                    tooltip={
+                                      e.inputPort
+                                        ? e.inputPort.name || e.inputPort.title
+                                        : group.tooltip
+                                    }
+                                    onDelete={() => handleDelete(e.name)}
+                                  />
+                                {/*   <IconButton
+                                    size="small"
+                                    onClick={() => handleDelete(e.name)}
+                                  >
+                                    <DeleteIcon />
+                                  </IconButton> */}
+                                </div>
                               );
                             }
                           })}
@@ -260,75 +355,6 @@ export default function ComponentPreview({
     );
   };
 
-  const _preview = () => {
-    return (
-      <Section sx={{ flex: 4 }}>
-        <span
-          style={{ fontSize: "14px", color: "#5F6368", marginBottom: "16px" }}
-        >
-          Preview
-        </span>
-        <Grid container direction="column">
-          {displayCodeData ? (
-            <Grid item>
-              <Preview
-                indicatorType={indicatorType}
-                indicatorName={indicatorName}
-                indicatorNameAvailable={indicatorNameAvailable}
-                displayCodeData={displayCodeData}
-                scriptCodeData={scriptCodeData}
-                indicatorPreviewData={indicatorPreviewData}
-                classes={classes}
-              />
-            </Grid>
-          ) : errorMessage ? (
-            <Alert severity="error">
-              Error: Unable to generate visualization preview due to an error.
-            </Alert>
-          ) : (
-            <>
-              {!displayCodeData && !completePreviewStep ? (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    color: "#5F6368",
-                    fontSize: "14px",
-                    minHeight: "156px",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: "16px",
-                      color: "#5F6368",
-                      fontSize: "14px",
-                      minHeight: "156px",
-                    }}
-                  >
-                    <img width="96px" height="96px" src={imgNoPreview} />
-                    Preview is available only when all steps are completed.
-                  </div>
-                </div>
-              ) : (
-                <ConditionalSelectionRender
-                  isRendered={true}
-                  isLoading={!displayCodeData && completePreviewStep}
-                  hasError={errorMessage}
-                  handleRefresh={() => {}}
-                ></ConditionalSelectionRender>
-              )}
-            </>
-          )}
-        </Grid>
-      </Section>
-    );
-  };
-
   const _buttonSave = {
     variant: "contained",
     label: "Save",
@@ -336,6 +362,13 @@ export default function ComponentPreview({
     disabled: !displayCodeData,
     hidden: !displayCodeData,
   };
+
+  useEffect(() => {
+    if (selections) {
+      const dag = buildDAGFromSelections(selections);
+      dag.printGraph();
+    }
+  }, [selections]);
 
   return (
     <ResponsiveComponent
@@ -369,7 +402,6 @@ export default function ComponentPreview({
           />
         </Section>
         <_selections selections={selections} />
-        {/*   <_preview /> */}
       </div>
     </ResponsiveComponent>
   );

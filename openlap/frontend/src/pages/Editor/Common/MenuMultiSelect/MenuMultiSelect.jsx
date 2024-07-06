@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Alert, TextField, styled } from "@mui/material";
-import Autocomplete from '@mui/material/Autocomplete';
+import Autocomplete from "@mui/material/Autocomplete";
 
-const HelperAlert = styled(Alert)(({ }) => ({
-  margin: '0 -14px',
-  padding: '0 12px',
-  fontSize: '12px',
+const HelperAlert = styled(Alert)(({}) => ({
+  margin: "0 -14px",
+  padding: "0 12px",
+  fontSize: "12px",
   "& .MuiAlert-icon": {
     fontSize: 16,
   },
   "& .MuiAlert-message": {
-    whiteSpace: 'normal'
-  }
+    whiteSpace: "normal",
+  },
 }));
 
 /**
@@ -42,7 +42,14 @@ const HelperAlert = styled(Alert)(({ }) => ({
  *
  * @author Louis Born <louis.born@stud.uni-due.de>
  */
-export default function MenuMultiSelect({ name, dataSource, itemName, handleChange, selectAll, customHelper }) {
+export default function MenuMultiSelect({
+  name,
+  dataSource,
+  itemName,
+  handleChange,
+  selectAll,
+  customHelper,
+}) {
   const hasSingleOption = dataSource.length === 1;
   const defaultValue = hasSingleOption ? dataSource : null;
   const selectAllItem = { name: "Select all" };
@@ -51,7 +58,9 @@ export default function MenuMultiSelect({ name, dataSource, itemName, handleChan
   const [isDisabled, setIsDisabled] = useState(false);
   const [disableSelectAll, setDisableSelectAll] = useState(false);
   // The "Select All" item is added to the select options.
-  const [source, setSource] = useState((dataSource.length > 0 ? [selectAllItem, ...dataSource] : dataSource));
+  const [source, setSource] = useState(
+    dataSource.length > 0 ? [selectAllItem, ...dataSource] : dataSource
+  );
   const timer = useRef(-1);
 
   const handleOpenClose = (isOpen) => {
@@ -77,7 +86,7 @@ export default function MenuMultiSelect({ name, dataSource, itemName, handleChan
     } else {
       handleChange(e, v);
     }
-  }
+  };
 
   useEffect(() => {
     // Disable "Select All" option if is selected
@@ -114,9 +123,13 @@ export default function MenuMultiSelect({ name, dataSource, itemName, handleChan
           variant="outlined"
           placeholder={`Select ${name}...`}
           helperText={
-            customHelper ? customHelper : (hasSingleOption && itemName === defaultValue) ?
-              (<HelperAlert severity="success">We've pre-selected the {name} with the only available option.</HelperAlert>)
-              : null
+            customHelper ? (
+              customHelper
+            ) : hasSingleOption && itemName === defaultValue ? (
+              <HelperAlert severity="success">
+                We've pre-selected the {name} with the only available option.
+              </HelperAlert>
+            ) : null
           }
         />
       )}
