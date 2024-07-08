@@ -13,7 +13,7 @@ import HelpTooltip from "../HelpTooltip/HelpTooltip";
  * @author Louis Born <louis.born@stud.uni-due.de>
  */
 export default function SelectContainer(props) {
-    const { name, isMandatory, allowsMultipleSelections, helper, children, hideDesc } = props;
+    const { name, isMandatory, allowsMultipleSelections, helper, children, hideDesc, overFlow } = props;
 
     return (
         <>
@@ -28,7 +28,7 @@ export default function SelectContainer(props) {
                 </Grid>}
                 <Grid item container xs={12} spacing={3} direction="row" alignItems="center">
                     <Grid item xs={(helper ? 10 : 12)}>
-                        <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+                        <div style={{ maxHeight: "300px", overflowY: overFlow}}>
                             {children}
                         </div>
                     </Grid>
