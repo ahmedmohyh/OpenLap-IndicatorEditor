@@ -274,7 +274,7 @@ export default function ComponentStep(props) {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleCloseDialog} >Cancle</Button>
+                <Button onClick={handleCloseDialog} >Cancel</Button>
                 <Button onClick={handleStepBackward}>Continue</Button>
             </DialogActions>
         </Dialog>
