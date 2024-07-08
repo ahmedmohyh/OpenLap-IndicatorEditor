@@ -15,10 +15,20 @@ import Tag from "../../Common/Tag/Tag";
 import { useSnackbar } from "./context/SnackbarContext";
 import SnackbarType from "./enum/SnackbarType";
 import nameValidator from "../../Helper/nameValidator";
-import imgNoPreview from "../../../../assets/img/vis-empty-state/no-indicator-preview.svg";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
-
+import {
+  selectDeselectActivityName,
+  setUsers,
+  setTimeDuration,
+  selectActivityTypes,
+  selectDeselectActionOnActivities,
+  selectPlatform,
+  selectDeselectAnalysisMethodMap,
+  selectDeselectAnalysisMethod,
+  selectDeselectAnalysisMethodParams,
+  setVisualizationMethod,
+  setVisualizationMethodInputs,
+  selectDeselectVisualizationMapping,
+} from "../../../../utils/redux/reducers/indicatorEditor";
 // DAG class definition
 class DAG {
   constructor() {
@@ -71,9 +81,24 @@ function buildDAGFromSelections(selections) {
 
           if (selectionKey === "selectedActivityTypes") {
             addDependencies(nodeName, "selectedActionOnActivities");
+            addDependencies(nodeName, "selectedActivityName");
+          }
+
+          if (selectionKey === "selectedActionOnActivities") {
+            addDependencies(nodeName, "selectedActivityName");
           }
           if (selectionKey === "selectedAnalysisMethod") {
-            addDependencies(nodeName, "selectedMappingAnalysisInputAttributesData");
+            addDependencies(
+              nodeName,
+              "selectedMappingAnalysisInputAttributesData"
+            );
+
+            addDependencies(
+              nodeName,
+              "selectedAnalyticsMethodParams"
+            );
+
+            
           }
           if (selectionKey === "selectedVisualizationMethod") {
             addDependencies(nodeName, "selectedVisualizationMethodsAndTypes");
@@ -231,23 +256,77 @@ export default function ComponentPreview({
 
   const groupedSelections = groupSelectionsByKey(selections);
 
-  const handleDelete = (nodeName) => {
+  const handleDelete = (nodeName, key, index) => {
     console.log("the node to be deleted is", nodeName);
+
+    const dag = buildDAGFromSelections(selections);
+
     if (dag.canDeleteNode(nodeName)) {
-      // Perform deletion logic here (not implemented in this example)
-      showSnackbar(
-        `Element "${nodeName}" has been deleted.`,
-        SnackbarType.success
-      );
-      // Example of state update or dispatch action:
-      // dispatch(deleteNodeAction(nodeName));
+        // Clone the existing selections
+        const updatedSelections = { ...selections };
+        
+        // Find the appropriate selection array using the key and remove the item at the specified index
+        if (updatedSelections[key] && Array.isArray(updatedSelections[key].selection)) {
+            updatedSelections[key].selection = updatedSelections[key].selection.filter((_, i) => i !== index);
+        }
+
+        // Show success message
+        showSnackbar(
+            `Element "${nodeName}" has been deleted.`,
+            SnackbarType.success
+        );
+        console.log("Element to be deleted in index", index);
+        
+        // Dispatch the updated selection array based on the key
+        switch (key) {
+            case "selectedPlatform":
+                dispatch(selectPlatform(updatedSelections[key].selection));
+                break;
+            case "selectedActivityTypes":
+                dispatch(selectActivityTypes(updatedSelections[key].selection));
+                break;
+            case "selectedActionOnActivities":
+                dispatch(selectDeselectActionOnActivities(updatedSelections[key].selection));
+                break;
+            case "selectedActivityName":
+                dispatch(selectDeselectActivityName(updatedSelections[key].selection));
+                break;
+            case "selectedTimeDuration":
+                dispatch(setTimeDuration(updatedSelections[key].selection[0]?.name || "", ""));
+                break;
+            case "selectedUsers":
+                dispatch(setUsers(updatedSelections[key].selection));
+                break;
+            case "selectedAnalysisMethod":
+                dispatch(selectDeselectAnalysisMethod(updatedSelections[key].selection));
+                break;
+            case "selectedMappingAnalysisInputAttributesData":
+                dispatch(selectDeselectAnalysisMethodMap(updatedSelections[key].selection));
+                break;
+            case "selectedAnalyticsMethodParams":
+                dispatch(selectDeselectAnalysisMethodParams(updatedSelections[key].selection));
+                break;
+            case "selectedVisualizationMethod":
+                dispatch(setVisualizationMethod(updatedSelections[key].selection));
+                break;
+            case "selectedVisualizationMethodsAndTypes":
+                dispatch(setVisualizationMethodInputs(updatedSelections[key].selection));
+                break;
+            case "selectedVisualizationMapping":
+                dispatch(selectDeselectVisualizationMapping(updatedSelections[key].selection));
+                break;
+            default:
+                console.error(`Unknown key: ${key}`);
+                break;
+        }
     } else {
-      showSnackbar(
-        `Error: Element "${nodeName}" is dependent on another node and cannot be deleted.`,
-        SnackbarType.error
-      );
+        showSnackbar(
+            `Error: Element "${nodeName}" is a parent node and cannot be deleted.`,
+            SnackbarType.error
+        );
     }
-  };
+};
+
 
   const _selections = ({ selections }) => {
     const noSelectionMade = Object.values(selections).every(
@@ -326,14 +405,10 @@ export default function ComponentPreview({
                                         ? e.inputPort.name || e.inputPort.title
                                         : group.tooltip
                                     }
-                                    onDelete={() => handleDelete(e.name)}
+                                    onDelete={() =>
+                                      handleDelete(e.name, key, index)
+                                    }
                                   />
-                                  {/* <IconButton
-                                    size="small"
-                                    onClick={() => handleDelete(e.name)}
-                                  >
-                                    <DeleteIcon />
-                                  </IconButton> */}
                                 </div>
                               );
                             }
@@ -361,7 +436,8 @@ export default function ComponentPreview({
   useEffect(() => {
     if (selections) {
       const dag = buildDAGFromSelections(selections);
-      dag.printGraph();
+      console.log("The selections are ", selections);
+      //dag.printGraph();
     }
   }, [selections]);
 
