@@ -19,10 +19,10 @@ const AvatarStyled = styled(Avatar, {
 }))
 
 /**@author Louis Born <louis.born@stud.uni-due.de> */
-export default function Tag({ color, step, label, completed, tooltip }) {
+export default function Tag({ color, step, label, completed, tooltip, onDelete, opacity }) {
 
     return (
-        <Tooltip title={
+        <Tooltip sx={{opacity:opacity}} title={
             <span style={{ fontSize: '16px' }}>{tooltip}</span>
         } arrow placement="right-start">
             <TagStyled avatar={
@@ -37,7 +37,7 @@ export default function Tag({ color, step, label, completed, tooltip }) {
                     <span>{label}</span>
                     <IconButton 
                     size="small" 
-                  
+                     onClick={onDelete}
                     sx={{ marginLeft: '8px', marginRight: '-11px' }} // Negative right margin
                 >
                     <CancelIcon sx={{ color: '#AEAEAE' }} />

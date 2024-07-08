@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Grid, TextField, styled } from "@mui/material";
 import {
@@ -48,20 +48,18 @@ class DAG {
     // Check if the node has any children
     return this.nodes.has(node) && this.nodes.get(node).length === 0;
   }
-
 }
 
 function buildDAGFromSelections(selections) {
   const dag = new DAG();
 
   const rootKey = "selectedPlatform";
-  const rootSelection = selections[rootKey].selection;
+  const rootSelection = selections[rootKey]?.selection;
 
   if (rootSelection && rootSelection.length > 0) {
     const rootName = rootSelection[0].name;
     dag.addNode(rootName);
 
-    // Function to add dependencies
     function addDependencies(parentNode, selectionKey) {
       const selection = selections[selectionKey];
       if (selection && selection.selection && selection.selection.length > 0) {
@@ -95,7 +93,6 @@ function buildDAGFromSelections(selections) {
 
   return dag;
 }
-
 
 const Section = styled("div")(() => ({
   display: "flex",
@@ -141,6 +138,8 @@ export default function ComponentPreview({
     indicatorName: indicatorName ? indicatorName : "",
     errorMessage: "",
   });
+
+  const dag = useMemo(() => buildDAGFromSelections(selections), [selections]);
 
   const handleSaveVisualization = () => {
     if (!nameValidator(selection.indicatorName)) {
@@ -233,11 +232,7 @@ export default function ComponentPreview({
   const groupedSelections = groupSelectionsByKey(selections);
 
   const handleDelete = (nodeName) => {
-
     console.log("the node to be deleted is", nodeName);
-
-    const dag = buildDAGFromSelections(selections);
-  
     if (dag.canDeleteNode(nodeName)) {
       // Perform deletion logic here (not implemented in this example)
       showSnackbar(
@@ -253,7 +248,6 @@ export default function ComponentPreview({
       );
     }
   };
-  
 
   const _selections = ({ selections }) => {
     const noSelectionMade = Object.values(selections).every(
@@ -322,6 +316,7 @@ export default function ComponentPreview({
                                         ? e.value || e.name
                                         : "null"
                                     }
+                                    opacity={dag.canDeleteNode(e.name) ? '1' : '0.38'}
                                     completed={
                                       group.completed &&
                                       group.stepIndex !== activeStep
@@ -333,7 +328,7 @@ export default function ComponentPreview({
                                     }
                                     onDelete={() => handleDelete(e.name)}
                                   />
-                                {/*   <IconButton
+                                  {/* <IconButton
                                     size="small"
                                     onClick={() => handleDelete(e.name)}
                                   >
