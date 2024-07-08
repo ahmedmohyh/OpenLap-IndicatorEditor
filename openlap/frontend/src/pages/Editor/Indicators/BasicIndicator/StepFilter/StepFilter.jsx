@@ -135,6 +135,7 @@ export default function StepFilter(props) {
               isMandatory={config.list_of_activities.mandatory}
               allowsMultipleSelections={config.list_of_activities.multiple_selections}
               helper={config.list_of_activities.helper}
+              overFlow={"auto"}
             >
               <MenuMultiSelect
                 name={config.list_of_activities.name}
