@@ -24,12 +24,12 @@ import {
   Tooltip,
   Typography,
   styled,
+  Collapse,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {
   getAllPlatforms,
   resetIndicatorSession,
-  editIndicatorRequest
 } from "../../../utils/redux/reducers/indicatorEditor";
 import SearchIcon from "@mui/icons-material/Search";
 import { useDispatch, useSelector } from "react-redux";
@@ -52,7 +52,16 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import MenuSingleSelect from "../Common/MenuSingleSelect/MenuSingleSelect";
 import ConditionalSelectionRender from "../Common/ConditionalSelectionRender/ConditionalSelectionRender";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import WifiIcon from "@mui/icons-material/Wifi";
+import LinkIcon from "@mui/icons-material/Link";
+import SettingsIcon from "@mui/icons-material/Link";
+import SettingsInputComponentIcon from "@mui/icons-material/SettingsInputComponent";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { useSnackbar } from 'notistack';
+
+
 
 const indicatorTypes = [
   "Basic Indicator",
@@ -80,6 +89,7 @@ const Section = styled("div")(() => ({
 export default function Dashboard() {
   // console.log(indicatorTypes);
 
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -99,14 +109,13 @@ export default function Dashboard() {
     openFeedbackStartMultiLevelIndicator: false,
   });
   const [dashboardLoading, setdashboardLoading] = useState(false);
+  const [ShareCopyIndicator, setShareCopyIndicator] = useState("");
 
   const [feedBackDelete, setfeedBackDelete] = useState(false);
   const [indicatorNameToBeDeleted, setindicatorNameToBeDeleted] = useState("");
   const [indicatorIdToBeDeleted, setindicatorIdToBeDeleted] = useState("");
 
-  const [feedBackEdit, setfeedBackEdit] = useState(false);
-  const [indicatorNameToBeEdited, setindicatorNameToBeEdit] = useState("");
-  const [indicatorIdToBeEdited, setindicatorIdToBeEdit] = useState("");
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const handleClose = () => {
     setfeedBackDelete(false);
@@ -122,26 +131,30 @@ export default function Dashboard() {
     deleteIndicator(indicatorIdToBeDeleted);
     handleClose();
 
-    // adding the time out because I want to wait till the result of the deletion comes. 
+    // adding the time out because I want to wait till the result of the deletion comes.
     // think of using a promise here instead of deleion
     setTimeout(() => {
       dispatch(resetIndicatorSession());
       dispatch(getUserQuestionsAndIndicators());
       scrollToTop();
-    }, 2000); // 10000 milliseconds = 10 seconds
+    }, 1000); // 10000 milliseconds = 10 seconds
   };
-
-  const handleEditIndicator = (indicator) => {
-      // setindicatorIdToBeEdit(indicatorIdToBeEdited);
-      // setindicatorNameToBeEdit("");
-      console.log("indicator to be edited: ", indicator);
-      dispatch(editIndicatorRequest(indicator));
-      navigate("/indicator/create-basic");
-  }
 
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [selectedType, setSelectedType] = React.useState("");
   const [search, setSearch] = useState("");
+
+  const [hoveredRow, setHoveredRow] = useState(null); // State to track hovered row id
+
+  // Function to handle mouse enter event on a row
+  const handleMouseEnter = (indicatorId) => {
+    setHoveredRow(indicatorId);
+  };
+
+  // Function to handle mouse leave event on a row
+  const handleMouseLeave = () => {
+    setHoveredRow(null);
+  };
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -183,6 +196,86 @@ export default function Dashboard() {
 
     return nameMatches && typeMatches && dateMatches;
   });
+
+  const [sortConfigType, setSortConfigType] = useState({
+    key: "type",
+    direction: "asc",
+  });
+  const [sortConfigDate, setSortConfigDate] = useState({
+    key: "date",
+    direction: "asc",
+  });
+
+  const handleSort = (column) => {
+    if (column === "type") {
+      setSortConfigType((prevConfig) => ({
+        key: "type",
+        direction: prevConfig.direction === "asc" ? "desc" : "asc",
+      }));
+    } else if (column === "date") {
+      setSortConfigDate((prevConfig) => ({
+        key: "date",
+        direction: prevConfig.direction === "asc" ? "desc" : "asc",
+      }));
+    }
+  };
+
+  const sortedResults = [...filteredResults].sort((a, b) => {
+    if (sortConfigType.direction === "asc" && a.indicatorType > b.indicatorType)
+      return 1;
+    if (sortConfigType.direction === "asc" && a.indicatorType < b.indicatorType)
+      return -1;
+    if (
+      sortConfigType.direction === "desc" &&
+      a.indicatorType > b.indicatorType
+    )
+      return -1;
+    if (
+      sortConfigType.direction === "desc" &&
+      a.indicatorType < b.indicatorType
+    )
+      return 1;
+
+    if (
+      sortConfigDate.direction === "asc" &&
+      new Date(a.createdOn) > new Date(b.createdOn)
+    )
+      return 1;
+    if (
+      sortConfigDate.direction === "asc" &&
+      new Date(a.createdOn) < new Date(b.createdOn)
+    )
+      return -1;
+    if (
+      sortConfigDate.direction === "desc" &&
+      new Date(a.createdOn) > new Date(b.createdOn)
+    )
+      return -1;
+    if (
+      sortConfigDate.direction === "desc" &&
+      new Date(a.createdOn) < new Date(b.createdOn)
+    )
+      return 1;
+
+    return 0;
+  });
+
+  const getSortIcon = (column) => {
+    if (column === "type") {
+      return sortConfigType.direction === "asc" ? (
+        <ArrowUpwardIcon />
+      ) : (
+        <ArrowDownwardIcon />
+      );
+    } else if (column === "date") {
+      return sortConfigDate.direction === "asc" ? (
+        <ArrowUpwardIcon />
+      ) : (
+        <ArrowDownwardIcon />
+      );
+    }
+    return null;
+  };
 
   const handleShowVisualization = async (indicator) => {
     setLoading(true);
@@ -312,12 +405,12 @@ export default function Dashboard() {
       //console.log(userDefinedIndicators[0].indicators.createdBy);
 
       console.log(userDefinedIndicators[0].indicators);
-    }
+    } else setdashboardLoading(false);
   }, [userDefinedIndicators]);
 
   useEffect(() => {
     //setting the loading spinner to true until the user indicators have loaded;
-    setdashboardLoading(true)
+    setdashboardLoading(true);
     dispatch(resetIndicatorSession());
     dispatch(getUserQuestionsAndIndicators());
     scrollToTop();
@@ -332,387 +425,457 @@ export default function Dashboard() {
       scrollToTop();
     }, 10000); // 10000 milliseconds = 10 seconds
   }, [dispatch, indicatorSaveResponse.length]);  */
-  
+
   return (
     <>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div>
-          <div>
-            <AppBar position="static" elevation={0}>
-              <Toolbar
-                sx={{
-                  minHeight: "48px!important",
-                  backgroundColor: "#ffffff",
-                  borderBottom: "1px solid #C9C9C9",
-                }}
-              >
-                <Container disableGutters maxWidth="false">
-                  <Box
-                    sx={{
-                      maxHeight: "64px",
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      alignItems: "center",
-                    }}
-                  >
-                    {/* Centered Page Title*/}
-                    <div
-                      style={{
-                        flexGrow: 1,
-                        textAlign: "center",
-                        fontSize: "1rem",
-                        color: "#000000",
-                      }}
-                    >
-                      <div role="presentation">
-                        <Breadcrumbs aria-label="breadcrumb">
-                          <Typography color="text.primary">
-                            Indicator Editor
-                          </Typography>
-                        </Breadcrumbs>
-                      </div>
-                    </div>
-                  </Box>
-                </Container>
-              </Toolbar>
-            </AppBar>
-            <Grid
-              container
-              style={{
-                maxWidth: "990px",
-                display: "flex",
-                flexDirection: "column",
-                margin: "24px auto",
-                padding: "0 32px",
+          <AppBar position="static" elevation={0}>
+            <Toolbar
+              sx={{
+                minHeight: "48px!important",
+                backgroundColor: "#ffffff",
+                borderBottom: "1px solid #C9C9C9",
               }}
             >
-              <Grid item>
-                <div>
+              <Container disableGutters maxWidth="false">
+                <Box
+                  sx={{
+                    maxHeight: "64px",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                  }}
+                >
+                  {/* Centered Page Title */}
                   <div
                     style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "32px",
+                      flexGrow: 1,
+                      textAlign: "center",
+                      fontSize: "1rem",
+                      color: "#000000",
                     }}
                   >
-                    <_createNewIndicator />
-                    <div>
-                      <p style={{ marginTop: 0, fontSize: "16px" }}>
-                        Your workspace
-                      </p>
-                      <Grid container sx={{ backgroundColor: "#F6F6F6" }}>
-                        <Grid item xs={12}></Grid>
-                      </Grid>
-                      <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>
-                                <Box display="flex" flexDirection="column">
-                                  <div>
-                                    {" "}
-                                    <strong>Indicator Name</strong>{" "}
-                                  </div>
-                                  <TextField
-                                    type="search"
-                                    fullWidth
-                                    sx={{ backgroundColor: "#f1f3f4" }}
-                                    placeholder="Search"
-                                    onChange={searchByIndicatorName}
-                                    InputProps={{
-                                      endAdornment: (
-                                        <InputAdornment position="end">
-                                          <SearchIcon></SearchIcon>
-                                        </InputAdornment>
-                                      ),
-                                    }}
-                                  />
-                                </Box>
-                              </TableCell>
-
-                              <TableCell style={{ width: "300px" }}>
-                                <Box display="flex" flexDirection="column">
-                                  <div>
-                                    <strong>Type </strong>{" "}
-                                  </div>
-                                  <SelectContainer
-                                    name={"Type filter"}
-                                    isMandatory={false}
-                                    allowsMultipleSelections={false}
-                                    hideDesc={true}
-                                  >
-                                    <MenuSingleSelect
-                                      name={"Type"}
-                                      dataSource={indicatorTypes}
-                                      itemName={selectedType}
-                                      handleChange={handleSelectTypeFilter}
-                                    />
-                                  </SelectContainer>
-                                </Box>
-                              </TableCell>
-
-                              <TableCell>
-                                <Box display="flex" flexDirection="column">
-                                  <div>
-                                    <strong>Creation date</strong>
-                                  </div>
-                                  <LocalizationProvider
-                                    style={{ marginTop: "-9px" }}
-                                    dateAdapter={AdapterDayjs}
-                                  >
-                                    <DemoContainer components={["DatePicker"]}>
-                                      <DatePicker
-                                        label="Pickup a date"
-                                        value={selectedDate}
-                                        onChange={handleDateChange}
-                                      />
-                                    </DemoContainer>
-                                  </LocalizationProvider>
-                                </Box>
-                              </TableCell>
-
-                              <TableCell align="center">Preview</TableCell>
-
-                              <TableCell align="center">Delete</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {filteredResults.map((indicator) => (
-                              <TableRow
-                                key={indicator.id}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    border: 0,
-                                  },
-                                }}
-                              >
-                                <TableCell component="th" scope="row">
-                                  {indicator.name}
-                                </TableCell>
-
-                                <TableCell>
-                                  {indicator.indicatorType === "composite"
-                                    ? "Composite Indicator"
-                                    : indicator.indicatorType ===
-                                      "multianalysis"
-                                    ? "Multi-Level Analysis Indicator"
-                                    : indicator.indicatorType}
-                                </TableCell>
-
-                                <TableCell>
-                                  {new Date(
-                                    indicator.createdOn
-                                  ).toLocaleDateString()} 
-                                </TableCell>
-
-                                <TableCell>
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "center",
-                                    }}
-                                  >
-                                    <Tooltip title="Open Preview">
-                                      <IconButton
-                                        color="priamry"
-                                        sx={{ padding: 0, maring: "0 4px" }}
-                                        onClick={() => {
-                                          handleShowVisualization(indicator);
-                                          setOpenDetails(!openDetails);
-                                        }}
-                                      >
-                                        <PreviewIcon />
-                                      </IconButton>
-                                    </Tooltip>
-                                  </div>
-                                </TableCell>
-
-                                <TableCell>
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "center",
-                                    }}
-                                  >
-                                    <Tooltip title="Delete Indicator">
-                                      <IconButton
-                                        color="error"
-                                        sx={{ padding: 0, maring: "0 4px" }}
-                                        onClick={() => {
-                                          setfeedBackDelete(true);
-                                          console.warn(indicator);
-                                          handleDeleteIndicator(indicator);
-                                        }}
-                                      >
-                                        <DeleteIcon />
-                                      </IconButton>
-                                    </Tooltip>
-                                  </div>
-                                </TableCell>
-                                <TableCell>
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "center",
-                                    }}
-                                  >
-                                    <Tooltip title="Edit Indicator">
-                                      <IconButton
-                                        color="error"
-                                        sx={{ padding: 0, maring: "0 4px" }}
-                                        onClick={() => {
-                                          handleEditIndicator(indicator);
-                                          setfeedBackEdit(true);
-                                          setindicatorNameToBeEdited(
-                                            indicator.name
-                                          );
-                                          setindicatorIdToBeEdit(
-                                            indicator.id
-                                          );
-                                        }}
-                                      >
-                                        <EditIcon/>
-                                      </IconButton>
-                                    </Tooltip>
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                      {filteredResults.length === 0 && search != "" && (
-                        <div
-                          style={{ display: "flex", justifyContent: "center" }}
-                        >
-                          <span
-                            style={{
-                              fontSize: "14px",
-                              fontWeight: "500",
-                              color: "#80868b",
-                              margin: "30px",
-                            }}
-                          >
-                            No indicator found with search term: "{search}".
-                          </span>
-                        </div>
-                      )}
-                      {userDefinedIndicators.length === 0 && (
-                        <div
-                          style={{ display: "flex", justifyContent: "center" }}
-                        >
-                          <span
-                            style={{
-                              fontSize: "14px",
-                              fontWeight: "500",
-                              color: "#80868b",
-                              margin: "30px",
-                            }}
-                          >
-                            No user defined indicators found.
-                          </span>
-                        </div>
-                      )}
+                    <div role="presentation">
+                      <Breadcrumbs aria-label="breadcrumb">
+                        <Typography color="text.primary">
+                          Indicator Editor
+                        </Typography>
+                      </Breadcrumbs>
                     </div>
                   </div>
-                </div>
-              </Grid>
-            </Grid>
-            {/* Dialog to preview the indicators specified for the question*/}
-            <Dialog
-              fullWidth
-              maxWidth="sm"
-              open={openDetails}
-              onClose={() => setOpenDetails(!openDetails)}
-              aria-labelledby="form-dialog-title"
-            >
-              {!loading ? (
-                <>
-                  <DialogTitle
-                    id="form-dialog-title"
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      borderBottom: "1px solid #C9C9C9",
-                    }}
-                  >
-                    <span>Preview: {visData.name}</span>
-                    <IconButton onClick={() => setOpenDetails(!openDetails)}>
-                      <CloseIcon />
-                    </IconButton>
-                  </DialogTitle>
-                  <DialogContent>
-                    <Preview viz={visData} />
-                  </DialogContent>
-                </>
-              ) : (
-                <Grid
-                  container
-                  direction="column"
-                  alignItems="center"
-                  sx={{ mt: 5 }}
+                </Box>
+              </Container>
+            </Toolbar>
+          </AppBar>
+          <Grid
+            container
+            style={{
+              maxWidth: "990px",
+              display: "flex",
+              flexDirection: "column",
+              margin: "24px auto",
+              padding: "0 32px",
+            }}
+          >
+            <Grid item>
+              <div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "32px",
+                  }}
                 >
-                  <CircularProgress sx={{ mb: 1 }} />
-                  <Typography>Loading indicator</Typography>
-                </Grid>
-              )}
-              <DialogActions>
-                <Button onClick={() => setOpenDetails(!openDetails)}>
-                  {" "}
-                  Close{" "}
+                  <_createNewIndicator />
+                  <div>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "16px",
+                        marginBottom: "16px",
+                      }}
+                    >
+                      <div>
+                        <TextField
+                          type="search"
+                          fullWidth
+                          sx={{ backgroundColor: "#f1f3f4" }}
+                          placeholder="Search"
+                          onChange={searchByIndicatorName}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <SearchIcon />
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </div>
+                      <Box fullWidth>
+                        <Button
+                          fullWidth // This makes the button take the full width of its parent container
+                          variant="outlined"
+                          startIcon={<SettingsInputComponentIcon />}
+                          onClick={() => setSettingsOpen(!settingsOpen)}
+                        >
+                          Settings
+                        </Button>
+                      </Box>
+                    </div>
+                    <Collapse in={settingsOpen} timeout="auto" unmountOnExit>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          gap: "16px",
+                          marginBottom: "16px",
+                          padding: "16px",
+                          backgroundColor: "#f1f3f4",
+                          borderRadius: "8px",
+                        }}
+                      >
+                        <Box sx={{ flex: 1 }}>
+                          {/*  <div>
+                            <strong>Type</strong>
+                          </div> */}
+                          <SelectContainer
+                            name={"Type filter"}
+                            isMandatory={false}
+                            allowsMultipleSelections={false}
+                            hideDesc={true}
+                            sx={{ width: "100%" }} // Ensure SelectContainer takes the full width of its flex container
+                          >
+                            <MenuSingleSelect
+                              name={"Type"}
+                              dataSource={indicatorTypes}
+                              itemName={selectedType}
+                              handleChange={handleSelectTypeFilter}
+                            />
+                          </SelectContainer>
+                        </Box>
+                        <Box sx={{ flex: 1 }}>
+                          {/*                           <div>
+                            <strong>Creation date</strong>
+                          </div> */}
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                              sx={{ width: "100%" }}
+                              label="Pick a date"
+                              value={selectedDate}
+                              onChange={handleDateChange}
+                              renderInput={(params) => (
+                                <TextField {...params} fullWidth />
+                              )}
+                            />
+                          </LocalizationProvider>
+                        </Box>
+                      </Box>
+                    </Collapse>
+
+                    <TableContainer component={Paper}>
+                      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>
+                              <Box display="flex" flexDirection="column">
+                                <div>
+                                  <strong>Indicator Name</strong>
+                                </div>
+                              </Box>
+                            </TableCell>
+                            <TableCell style={{ width: "300px" }}>
+                              <Box
+                                display="flex"
+                                flexDirection="row"
+                                alignItems="center"
+                              >
+                                <div>
+                                  <strong>Type</strong>
+                                </div>
+                                <IconButton onClick={() => handleSort("type")}>
+                                  {getSortIcon("type")}
+                                </IconButton>
+                              </Box>
+                            </TableCell>
+                            <TableCell>
+                              <Box
+                                display="flex"
+                                flexDirection="row"
+                                alignItems="center"
+                              >
+                                <div>
+                                  <strong>Date</strong>
+                                </div>
+                                <IconButton onClick={() => handleSort("date")}>
+                                  {getSortIcon("date")}
+                                </IconButton>
+                              </Box>
+                            </TableCell>
+                            <TableCell align="center">Preview</TableCell>
+                            <TableCell align="center">Share</TableCell>
+                            <TableCell align="center"></TableCell>
+                          </TableRow>
+                        </TableHead>
+
+                        <TableBody>
+                          {sortedResults.map((indicator) => (
+                            <TableRow
+                              key={indicator.id}
+                              onMouseEnter={() =>
+                                handleMouseEnter(indicator.id)
+                              }
+                              onMouseLeave={handleMouseLeave}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
+                            >
+                              <TableCell component="th" scope="row">
+                                {indicator.name}
+                              </TableCell>
+                              <TableCell>
+                                {indicator.indicatorType === "composite"
+                                  ? "Composite Indicator"
+                                  : indicator.indicatorType === "multianalysis"
+                                  ? "Multi-Level Analysis Indicator"
+                                  : indicator.indicatorType}
+                              </TableCell>
+                              <TableCell>
+                                {new Date(
+                                  indicator.createdOn
+                                ).toLocaleDateString()}
+                              </TableCell>
+                              <TableCell>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <Tooltip title="Open Preview">
+                                    <IconButton
+                                      color="priamry"
+                                      sx={{ padding: 0, margin: "0 4px" }}
+                                      onClick={() => {
+                                        handleShowVisualization(indicator);
+                                        setOpenDetails(!openDetails);
+                                        setShareCopyIndicator(
+                                          indicator.indicatorRequestCode
+                                        );
+                                      }}
+                                    >
+                                      <PreviewIcon />
+                                    </IconButton>
+                                  </Tooltip>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <Tooltip title="">
+                                    <IconButton
+                                      color="priamry"
+                                      sx={{ padding: 0, margin: "0 4px" }}
+                                      onClick={() => {
+                                        navigator.clipboard.writeText(
+                                          indicator.indicatorRequestCode
+                                        );
+                                        enqueueSnackbar('Indicator copied to clipboard', {
+                                          variant: 'default', // Use 'default' or omit for no specific variant
+                                          style: { backgroundColor: '#323232', color: 'white' }, 
+                                          anchorOrigin: {
+                                            vertical: 'bottom',
+                                            horizontal: 'center',
+                                          },// Custom style for black background and white text
+                                        });
+                                      }}
+                                    >
+                                      <LinkIcon />
+                                    </IconButton>
+                                  </Tooltip>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    opacity:
+                                      hoveredRow === indicator.id ? 1 : 0, // Show delete button only if hovered
+                                  }}
+                                >
+                                  <Tooltip title="Delete Indicator">
+                                    <IconButton
+                                      color="error"
+                                      sx={{ padding: 0, margin: "0 4px" }}
+                                      onClick={() => {
+                                        setfeedBackDelete(true);
+                                        setindicatorNameToBeDeleted(
+                                          indicator.name
+                                        );
+                                        setindicatorIdToBeDeleted(indicator.id);
+                                      }}
+                                    >
+                                      <DeleteIcon />
+                                    </IconButton>
+                                  </Tooltip>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+
+                    {filteredResults.length === 0 && search !== "" && (
+                      <div
+                        style={{ display: "flex", justifyContent: "center" }}
+                      >
+                        <span
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "500",
+                            color: "#80868b",
+                            margin: "30px",
+                          }}
+                        >
+                          No indicator found with search term: "{search}".
+                        </span>
+                      </div>
+                    )}
+                    {userDefinedIndicators.length === 0 && (
+                      <div
+                        style={{ display: "flex", justifyContent: "center" }}
+                      >
+                        <span
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "500",
+                            color: "#80868b",
+                            margin: "30px",
+                          }}
+                        >
+                          No user defined indicators found.
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </Grid>
+          </Grid>
+          {/* Dialog to preview the indicators */}
+          <Dialog
+            fullWidth
+            maxWidth="sm"
+            open={openDetails}
+            onClose={() => setOpenDetails(!openDetails)}
+            aria-labelledby="form-dialog-title"
+          >
+            {!loading ? (
+              <>
+                <DialogTitle
+                  id="form-dialog-title"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    borderBottom: "1px solid #C9C9C9",
+                  }}
+                >
+                  <span>Preview: {visData.name}</span>
+                  <IconButton onClick={() => setOpenDetails(!openDetails)}>
+                    <CloseIcon />
+                  </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                  <Preview viz={visData} />
+                </DialogContent>
+              </>
+            ) : (
+              <Grid
+                container
+                direction="column"
+                alignItems="center"
+                sx={{ mt: 5 }}
+              >
+                <CircularProgress sx={{ mb: 1 }} />
+                <Typography>Loading indicator</Typography>
+              </Grid>
+            )}
+            <DialogActions
+              sx={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <Box>
+                <Button
+                  onClick={() => {
+                    navigator.clipboard.writeText(shareCopyIndicator);
+                  }}
+                >
+                  <ContentCopyIcon /> Copy
                 </Button>
-              </DialogActions>
-            </Dialog>
-            {/**@author Louis Born <louis.born@stud.uni-due.de> */}
-           {/**Loading spinner> */}
-           <ConditionalSelectionRender
-                  isRendered={true}
-                  isLoading={dashboardLoading}
-                  hasError={false}
-                  handleRefresh={() => { } }
-                ></ConditionalSelectionRender>
-            <ModalMessage
-              dialogTitle={"Please note"}
-              dialogPrimaryContext={`All the combining basic indicators MUST apply the same analytics method, i.e., Count.`}
-              openDialog={feedback.openFeedbackStartCompositeIndicator}
-              setOpenDialog={() =>
-                handleFeedback(
-                  "openFeedbackStartCompositeIndicator",
-                  feedback.openFeedbackStartCompositeIndicator
-                )
-              }
-              primaryAction={() => navigate("/indicator/create-composite")}
-              primaryButton={"Continue"}
-            />
-            {/**@author Louis Born <louis.born@stud.uni-due.de> */}
-            <ModalMessage
-              dialogTitle={"Please note"}
-              dialogPrimaryContext={`All the combining basic indicators MUST have at least one common attribute, i.e., student ID.`}
-              openDialog={feedback.openFeedbackStartMultiLevelIndicator}
-              setOpenDialog={() =>
-                handleFeedback(
-                  "openFeedbackStartMultiLevelIndicator",
-                  feedback.openFeedbackStartMultiLevelIndicator
-                )
-              }
-              primaryAction={() => navigate("/indicator/create-multi-level")}
-              primaryButton={"Continue"}
-            />
-            {/**@author Ahmed Mousa  <ahmed.mousa@stud.uni-due.de> */}
-            <ModalMessage
-              dialogTitle={"Delete indicator: " + indicatorNameToBeDeleted}
-              dialogPrimaryContext={
-                `Are you sure you want to delete the indicator: ` +
-                indicatorNameToBeDeleted
-              } // to do add the indicator name
-              openDialog={feedBackDelete}
-              primaryAction={handleDeleteIndicator} // to do add the delete indicator function
-              primaryButton={"yes"}
-              tertiaryAction={handleClose} // to do add the close modal function
-              tertiaryButton={"No"}
-            />
-          </div>
+              </Box>
+              <Box>
+                <Button onClick={() => setOpenDetails(!openDetails)}>
+                  Close
+                </Button>
+              </Box>
+            </DialogActions>
+          </Dialog>
+          {/* Conditional loading spinner */}
+          <ConditionalSelectionRender
+            isRendered={true}
+            isLoading={dashboardLoading}
+            hasError={false}
+            handleRefresh={() => {}}
+          />
+          {/* Modal for composite indicator */}
+          <ModalMessage
+            dialogTitle={"Please note"}
+            dialogPrimaryContext={`All the combining basic indicators MUST apply the same analytics method, i.e., Count.`}
+            openDialog={feedback.openFeedbackStartCompositeIndicator}
+            setOpenDialog={() =>
+              handleFeedback(
+                "openFeedbackStartCompositeIndicator",
+                feedback.openFeedbackStartCompositeIndicator
+              )
+            }
+            primaryAction={() => navigate("/indicator/create-composite")}
+            primaryButton={"Continue"}
+          />
+          {/* Modal for multi-level indicator */}
+          <ModalMessage
+            dialogTitle={"Please note"}
+            dialogPrimaryContext={`All the combining basic indicators MUST have at least one common attribute, i.e., student ID.`}
+            openDialog={feedback.openFeedbackStartMultiLevelIndicator}
+            setOpenDialog={() =>
+              handleFeedback(
+                "openFeedbackStartMultiLevelIndicator",
+                feedback.openFeedbackStartMultiLevelIndicator
+              )
+            }
+            primaryAction={() => navigate("/indicator/create-multi-level")}
+            primaryButton={"Continue"}
+          />
+          {/* Modal for deleting indicator */}
+          <ModalMessage
+            dialogTitle={"Delete indicator: " + indicatorNameToBeDeleted}
+            dialogPrimaryContext={
+              `Are you sure you want to delete the indicator: ` +
+              indicatorNameToBeDeleted
+            }
+            openDialog={feedBackDelete}
+            primaryAction={handleDeleteIndicator}
+            primaryButton={"yes"}
+            tertiaryAction={handleClose}
+            tertiaryButton={"No"}
+          />
         </div>
       </div>
     </>

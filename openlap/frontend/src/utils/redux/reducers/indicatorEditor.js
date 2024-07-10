@@ -65,9 +65,6 @@ export const INDICATOR_SAVED = "indicatorSaved";
 export const GET_INDICATOR_DATA_FOR_EDIT = "getIndicatorDataForEdit";
 export const SET_INDICATOR_DATA_FOR_EDIT = "setIndicatorDataForEdit";
 
-//Editor actions
-export const EDIT_INDICATOR_REQUEST = "editIndicatorRequest";
-
 // General reducers of indicators
 // Resets the indicator editor session
 export const resetIndicatorSession = () => ({
@@ -309,10 +306,6 @@ export const setIndicatorDataForEdit = (indicatorData) => ({
   payload: {indicatorData}
 })
 
-export const editIndicatorRequest = (indicator) => ({
-  type: EDIT_INDICATOR_REQUEST,
-  payload: {indicator},
-})
 
 
 const initialState = {
@@ -1061,21 +1054,6 @@ export default function editorReducer(state = initialState, action) {
           completePreviewStep: true
         }
       };
-      case EDIT_INDICATOR_REQUEST:
-        console.log("EDIT_INDICATOR_REQUEST", action.payload);
-        return {
-          ...state,
-          common: {
-            ...state.common,
-            activeStep: 3,
-            completedStep: {0: true, 1: true, 2: true}
-          },
-          selectedData: {
-            ...state.selectedData,
-            visualizationMethod: action.payload.indicator.visualizationMethod,
-            // state.selected.visuali
-          },
-        }
     // Default
     default:
       return state;
