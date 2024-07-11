@@ -201,37 +201,98 @@ export default function ComponentStep(props) {
         );
     };
 
-    const _customStep = (
-        <Box sx={{ width: '100%' }}>
-            <Stepper nonLinear activeStep={activeStep}>
-                {STEPS.map((step, index) => {
-                    return (
-                        <Step key={index} completed={completed.includes(step.name)}>
-                            {(activeStep < index) ? (
-                                <Tooltip title={<span style={{ fontSize: '16px' }}>
-                                    This step is disabled. Complete the current to proceed.
-                                </span>}>
-                                    <span>
-                                        <StepButton onClick={handleStep(index)} disabled={(activeStep < index)}>
-                                            <StepLabel StepIconComponent={_customStepIcon}>
-                                                <div style={{ fontSize: '18px' }}>{step.name}</div>
-                                            </StepLabel>
-                                        </StepButton>
-                                    </span>
-                                </Tooltip>
-                            ) : (
-                                <StepButton onClick={handleStep(index)}>
-                                    <StepLabel StepIconComponent={_customStepIcon} sx={{'&:hover': { textDecoration: activeStep !== index ? 'underline' : 'none' }}}>
-                                        <div style={{ fontSize: '18px' , textDecoration : activeStep === index ? 'underline' : 'none'}}>{step.name}</div>
-                                    </StepLabel>
-                                </StepButton>
-                            )}
-                        </Step>
-                    )
-                })}
-            </Stepper>
-        </Box>
-    );
+    const [openDialogStepper, setOpenDialogStepper] = useState(false);
+    const [currentStepIndex, setCurrentStepIndex] = useState(null);
+
+    const handleClickOpenDialogStepper = (index) => {
+      setCurrentStepIndex(index);
+      setOpenDialogStepper(true);
+    };
+
+    const handleCloseDialogStepper = () => {
+      setOpenDialogStepper(false);
+    };
+
+    const handleContinue = () => {
+      handleStep(currentStepIndex)();
+      setOpenDialogStepper(false);
+    };
+
+    const _customStep =(
+    <Box sx={{ width: '100%' }}>
+      <Stepper nonLinear activeStep={activeStep}>
+        {STEPS.map((step, index) => {
+          const isDisabled = activeStep < index;
+          return (
+            <Step key={index} completed={completed.includes(step.name)}>
+              {isDisabled ? (
+                <Tooltip
+                  title={
+                    <span style={{ fontSize: "16px" }}>
+                      This step is disabled. Complete the current to proceed.
+                    </span>
+                  }
+                >
+                  <span>
+                    <StepButton
+                      onClick={() => handleClickOpenDialogStepper(index)}
+                      disabled={isDisabled}
+                    >
+                      <StepLabel StepIconComponent={_customStepIcon}>
+                        <div style={{ fontSize: "18px" }}>{step.name}</div>
+                      </StepLabel>
+                    </StepButton>
+                  </span>
+                </Tooltip>
+              ) : (
+                <>
+                  <StepButton
+                    onClick={() => handleClickOpenDialogStepper(index)}
+                  >
+                    <StepLabel
+                      StepIconComponent={_customStepIcon}
+                      sx={{
+                        "&:hover": {
+                          textDecoration:
+                            activeStep !== index ? "underline" : "none",
+                        },
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: "18px",
+                          textDecoration:
+                            activeStep === index ? "underline" : "none",
+                        }}
+                      >
+                        {step.name}
+                      </div>
+                    </StepLabel>
+                  </StepButton>
+                  <Dialog
+                    open={openDialogStepper}
+                    onClose={handleCloseDialogStepper}
+                  >
+                    <DialogTitle>Warning</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Going back to the previous step will alter your current
+                        selections.
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleCloseDialogStepper}>Cancel</Button>
+                      <Button onClick={handleContinue}>Continue</Button>
+                    </DialogActions>
+                  </Dialog>
+                </>
+              )}
+            </Step>
+          );
+        })}
+      </Stepper>
+    </Box>
+  );
 
     const [openDialog, setOpenDialog] = useState(false);
     const handleClickOpenDialog = () => {
