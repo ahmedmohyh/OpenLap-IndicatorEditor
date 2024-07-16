@@ -1,45 +1,44 @@
 # OpenLap-IndicatorEditor
-This will be our development openlap indicator editor development project
 
-Readme will be completed step by step along with the project
+## Project Title: OpenLap Indicator Editor
 
+### Description:
+The openlap is a platform meant as an Analysis as a Service platform that enables the enduser to visualize their data using kinds of visualization. 
+### OpenLAP Application Web Architecture:
+1. we used Redux library to manage the project state
+   Picture to redux:
+   ![image](https://github.com/user-attachments/assets/70114702-0b86-4698-8291-ea6546a1f061)
 
+2. We used the DAG data structure to structure the user selections in form of a directed graph
+   picture to the dag:
+   ![image](https://github.com/user-attachments/assets/4993bb83-8c21-4faa-987e-cde16208c996)
 
-# Project Workload
+**[Illustration of the architecture goes here]**
 
-This document outlines the workload distribution among team members for the project. The table below lists 25 tasks and their corresponding assignees along with the deadlines.
+**Additional Libraries Used:**
+- React
+- Redux
+- Material-UI
+- Axios
+- Chart.js
+- D3.js
 
-## Team Members
-- Ahmed
-- Mohamed
-- Ali
+### Screenshots:
+**[Insert screenshots of the project and visualizations here]**
+
+### Team Members:
+- Ahmed Mousa
+- Mohamed Ahmed
+- Ali Elhag
 - Aliyah
-- Ela
+- Ela 
 - Mehdi
 - Leonie
 - Valerie
 - Marie
 
-## Task Distribution
+### Screencast:
+Watch the live demo of our project on YouTube: [OpenLap Indicator Editor Live Demo](https://uni-due.zoom-x.de/rec/share/IZVUTrcOZDmJDHRgBkD3SdsJ258MwAB_i5MUQ0I7mY-YgWcbJuqi7Kd6tb9tCd5y.lzZqbm_pOaOPIjOq)
 
-| Issue ID | Deadline   | Ahmed | Mohamed | Ali | Aliyah | Ela | Mehdi | Leonie | Valerie | Marie |
-|----------|------------|-------|---------|-----|--------|-----|-------|--------|---------|-------|
-| 24        | 09.06.2024 | ✓     |         |     |    ✓    |     |       |      |         |       |
-| 14        | 09.06.2024 | ✓     |         |     |    ✓    |     |       |      |         |       |
-| 16        | 16.06.2024 | ✓     |         |     |    ✓    |     |       |      |         |       |
-| 33        | 16.06.2024 | ✓     |         |     |    ✓    |     |       |      |         |       |
-| 19        | 09.06.2024 |       | ✓       |     |        |     |       |    ✓   |         |       |
-| 7        | 09.06.2024 |       |          | ✓   |        |     |       |        |   ✓      |       |
-| 21        | 16.06.2024 |       |          | ✓   |        |     |       |        |   ✓      |       |
-| 10       | 09.06.2024 |       |         |     |        |   ✓  |  ✓     |      |         | ✓      |
-| 28       | 16.06.2024 |       |         |     |        |   ✓  |  ✓     |      |         | ✓      |
-
-
-## Notes
-- Tasks are marked with a ✓ under the team member responsible for completing them.
-- This table is a draft and may change as the project progresses.
-My notes:
-
-Where did we find the component: StepFilter(on line 128 with component ConditionalSelectionRender having the property isLoading) ->
-CircularIndeterminateLoader
-
+### Advertisement Video:
+Watch our advertisement video on YouTube: [OpenLap Indicator Editor Advertisement](#)
