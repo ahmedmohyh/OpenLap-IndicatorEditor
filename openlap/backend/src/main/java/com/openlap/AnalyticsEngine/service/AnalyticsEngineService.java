@@ -1320,7 +1320,14 @@ public class AnalyticsEngineService {
 //		Question question = getQuestionById(questionId);
         List<IndicatorResponse> indicators = new ArrayList<IndicatorResponse>();
 
+        String indicatorExecutionURL = "http://localhost:8090/iview/indicator?triadID=";
+        String heightAndWidth = "height='600px' width='600px'";
+
+
         for (Triad triad : triads) {
+            String iFrameCodeIndicator = "<iframe src='" + indicatorExecutionURL + triad.getId() +
+                    "' frameborder='0'" + heightAndWidth + " />";
+
             System.out.println("triads: " + triad);
             Indicator indicator = getIndicatorById(triad.getIndicatorReference().getIndicators().get("0").getId());
 
@@ -1348,6 +1355,7 @@ public class AnalyticsEngineService {
             indicatorResponse.setCreatedBy(triad.getCreatedBy());
             indicatorResponse.setCreatedOn(triad.getCreatedOn());
             indicatorResponse.setOutputs(triad.getOpenLAPDataSet());
+            indicatorResponse.setIndicatorRequestCode(iFrameCodeIndicator);
             indicators.add(indicatorResponse);
             System.out.println("indicator " + indicatorResponse);
         }
