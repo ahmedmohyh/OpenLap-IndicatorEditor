@@ -53,7 +53,7 @@ We used the DAG data structure to structure the user selections in form of a dir
 - Mehdi Ghaffari (B.Sc AI)
 
 ### Screencast:
-Watch the live demo of our project on YouTube: [OpenLap Indicator Editor Live Demo](https://uni-duisburg-essen.sciebo.de/s/UruBLTmtkkz5GrT)
+Watch the live demo of our project on Sciebo: [OpenLap Indicator Editor Live Demo](https://uni-duisburg-essen.sciebo.de/s/UruBLTmtkkz5GrT)
 
 ### Advertisement Video:
-Watch our advertisement video on YouTube: [OpenLap Indicator Editor Advertisement](https://uni-duisburg-essen.sciebo.de/s/rbD10WswL4ivX14)
+Watch our advertisement video on Sciebo: [OpenLap Indicator Editor Advertisement](https://uni-duisburg-essen.sciebo.de/s/rbD10WswL4ivX14)
